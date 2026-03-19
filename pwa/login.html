@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>HGS Filo — Giriş</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:  #0b0e1a;
+      --s1:  #111828;
+      --s2:  #1a2035;
+      --or:  #ff6b35;
+      --or2: #ff9a00;
+      --tl:  #00d4aa;
+      --txt: #eef2ff;
+      --sub: #6b7a99;
+      --bdr: rgba(255,255,255,0.06);
+    }
+
+    html, body { height: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--txt);
+      font-family: 'Space Grotesk', sans-serif;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 100vh; padding: 1rem;
+    }
+
+    body::before {
+      content: ''; position: fixed; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 70% 50% at 10% 10%, rgba(255,107,53,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 90% 90%, rgba(0,212,170,0.06) 0%, transparent 60%);
+    }
+
+    .box {
+      width: 100%; max-width: 400px;
+      position: relative; z-index: 1;
+    }
+
+    .brand {
+      text-align: center; margin-bottom: 2rem;
+    }
+    .brand-mark {
+      width: 64px; height: 64px; border-radius: 18px;
+      background: linear-gradient(135deg, var(--or), var(--or2));
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 2rem; margin-bottom: 1rem;
+      box-shadow: 0 8px 32px rgba(255,107,53,0.35);
+    }
+    .brand h1 { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.03em; }
+    .brand p  { font-size: 0.78rem; color: var(--sub); margin-top: 0.3rem; font-weight: 500; }
+
+    .card {
+      background: var(--s1);
+      border: 1px solid var(--bdr);
+      border-radius: 24px;
+      padding: 2rem;
+    }
+
+    .card h2 {
+      font-size: 1rem; font-weight: 800; margin-bottom: 1.5rem;
+      padding-bottom: 1rem; border-bottom: 1px solid var(--bdr);
+    }
+
+    .field { margin-bottom: 1rem; }
+    label {
+      display: block;
+      font-size: 0.65rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.09em;
+      color: var(--sub); margin-bottom: 0.4rem;
+    }
+    input {
+      width: 100%;
+      background: var(--s2);
+      border: 1.5px solid var(--bdr);
+      border-radius: 12px;
+      color: var(--txt);
+      padding: 0.85rem 1rem;
+      font-size: 0.95rem; font-weight: 500;
+      font-family: 'Space Grotesk', sans-serif;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    input:focus {
+      border-color: rgba(255,107,53,0.5);
+      box-shadow: 0 0 0 3px rgba(255,107,53,0.1);
+    }
+
+    .btn {
+      width: 100%; padding: 0.95rem;
+      border: none; border-radius: 14px;
+      font-size: 0.92rem; font-weight: 700;
+      font-family: 'Space Grotesk', sans-serif;
+      cursor: pointer; display: flex;
+      align-items: center; justify-content: center; gap: 0.5rem;
+      transition: all .15s; margin-top: 1.25rem;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-or {
+      background: linear-gradient(135deg, var(--or), var(--or2));
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(255,107,53,0.3);
+    }
+    .btn-or:hover:not(:disabled) { box-shadow: 0 6px 28px rgba(255,107,53,0.45); }
+
+    .msg {
+      padding: 0.7rem 1rem; border-radius: 12px;
+      font-size: 0.82rem; font-weight: 500; margin-top: 0.75rem;
+    }
+    .msg.err { background: rgba(255,107,53,0.08); color: var(--or); border: 1px solid rgba(255,107,53,0.2); }
+    .msg.ok  { background: rgba(0,212,170,0.08); color: var(--tl); border: 1px solid rgba(0,212,170,0.2); }
+
+    .sp {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,.25);
+      border-top-color: #fff; border-radius: 50%;
+      animation: spin .6s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .links {
+      display: flex; justify-content: center; gap: 1.5rem;
+      margin-top: 1.25rem;
+    }
+    .links a {
+      font-size: 0.72rem; font-weight: 600; color: var(--sub);
+      text-decoration: none; transition: color .2s;
+    }
+    .links a:hover { color: var(--or); }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <div class="brand">
+    <div class="brand-mark">🛣️</div>
+    <h1>HGS Filo</h1>
+    <p>Geçiş Takip Sistemi</p>
+  </div>
+
+  <div class="card">
+    <h2>Sisteme Giriş</h2>
+
+    <div class="field">
+      <label>Kullanıcı Adı</label>
+      <input type="text" id="username" placeholder="admin" autocomplete="username"
+        onkeydown="if(event.key==='Enter')login()">
+    </div>
+    <div class="field">
+      <label>Şifre</label>
+      <input type="password" id="password" placeholder="••••••••" autocomplete="current-password"
+        onkeydown="if(event.key==='Enter')login()">
+    </div>
+
+    <button class="btn btn-or" id="btn-login" onclick="login()">
+      Giriş Yap
+    </button>
+    <div id="msg"></div>
+  </div>
+
+  <div class="links">
+    <a href="index.html">📱 Mobil Uygulama</a>
+    <a href="admin.html">🖥️ Admin Panel</a>
+  </div>
+</div>
+
+<script>
+const API = "http://localhost:8000";
+const redirect = new URLSearchParams(location.search).get("to") || "index.html";
+
+// Zaten giriş yapılmışsa yönlendir
+if (localStorage.getItem("hgs_token")) {
+  location.href = redirect;
+}
+
+async function login() {
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value;
+
+  if (!username || !password) {
+    showMsg("err", "Kullanıcı adı ve şifre girin");
+    return;
+  }
+
+  const btn = document.getElementById("btn-login");
+  btn.disabled = true;
+  btn.innerHTML = '<div class="sp"></div>Giriş yapılıyor...';
+
+  try {
+    const form = new URLSearchParams();
+    form.append("username", username);
+    form.append("password", password);
+
+    const r = await fetch(API + "/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: form
+    });
+
+    if (!r.ok) {
+      const e = await r.json();
+      throw new Error(e.detail || "Giriş başarısız");
+    }
+
+    const data = await r.json();
+    localStorage.setItem("hgs_token", data.access_token);
+    localStorage.setItem("hgs_user", JSON.stringify({
+      username: data.username,
+      full_name: data.full_name,
+      role: data.role
+    }));
+
+    showMsg("ok", `✓ Hoş geldin, ${data.full_name || data.username}!`);
+    setTimeout(() => location.href = redirect, 600);
+  } catch(e) {
+    showMsg("err", "❌ " + e.message);
+    btn.disabled = false;
+    btn.textContent = "Giriş Yap";
+  }
+}
+
+function showMsg(type, text) {
+  document.getElementById("msg").innerHTML = `<div class="msg ${type}">${text}</div>`;
+}
+</script>
+</body>
+</html>

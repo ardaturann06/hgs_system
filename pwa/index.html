@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>HGS Filo</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0b0e1a">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:   #0b0e1a;
+      --c1:   #141928;
+      --c2:   #1a2035;
+      --or:   #ff6b35;
+      --or2:  #ff9a00;
+      --tl:   #00d4aa;
+      --tl2:  #00a87e;
+      --bl:   #3b82f6;
+      --txt:  #eef2ff;
+      --sub:  #6b7a99;
+      --dim:  #252d45;
+      --bdr:  rgba(255,255,255,0.06);
+    }
+
+    html, body { height: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--txt);
+      font-family: 'Space Grotesk', sans-serif;
+      display: flex; flex-direction: column; height: 100%;
+      overflow: hidden;
+    }
+
+    /* ── BG GLOW ── */
+    body::before {
+      content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background:
+        radial-gradient(ellipse 70% 40% at 15% -10%, rgba(255,107,53,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 85% 110%, rgba(0,212,170,0.06) 0%, transparent 60%);
+    }
+
+    /* ─────────────────────────────
+       HEADER
+    ───────────────────────────── */
+    header {
+      flex-shrink: 0; position: relative; z-index: 20;
+      padding: 1rem 1.25rem;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--bdr);
+      background: rgba(11,14,26,0.8);
+      backdrop-filter: blur(20px);
+    }
+    .logo { display: flex; align-items: center; gap: 0.65rem; }
+    .logo-sq {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--or), var(--or2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.05rem; flex-shrink: 0;
+      box-shadow: 0 4px 16px rgba(255,107,53,0.35);
+    }
+    .logo-text .n { font-size: 0.98rem; font-weight: 800; letter-spacing: -0.02em; }
+    .logo-text .s { font-size: 0.6rem; color: var(--sub); font-weight: 500; }
+
+    .api-badge {
+      display: flex; align-items: center; gap: 0.35rem;
+      font-size: 0.68rem; font-weight: 600; color: var(--sub);
+      padding: 0.3rem 0.7rem;
+      background: var(--c1); border: 1px solid var(--bdr); border-radius: 99px;
+    }
+    .adot { width: 6px; height: 6px; border-radius: 50%; background: var(--dim); transition: all .3s; }
+    .adot.on  { background: var(--tl); box-shadow: 0 0 7px var(--tl); }
+    .adot.off { background: var(--or); }
+
+    /* ─────────────────────────────
+       TAB BAR (top)
+    ───────────────────────────── */
+    .tabbar {
+      flex-shrink: 0; position: relative; z-index: 15;
+      display: flex; gap: 0;
+      background: var(--c1);
+      border-bottom: 1px solid var(--bdr);
+    }
+    .tb {
+      flex: 1; padding: 0.85rem 0.5rem;
+      text-align: center; font-size: 0.75rem; font-weight: 700;
+      cursor: pointer; color: var(--sub);
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s; display: flex; flex-direction: column;
+      align-items: center; gap: 0.2rem;
+      text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .tb .ico { font-size: 1.1rem; }
+    .tb.on { color: var(--or); border-bottom-color: var(--or); }
+
+    /* ─────────────────────────────
+       SCROLL AREA
+    ───────────────────────────── */
+    .body { flex: 1; overflow-y: auto; overflow-x: hidden; position: relative; z-index: 1; }
+    .body::-webkit-scrollbar { display: none; }
+
+    /* ─────────────────────────────
+       PAGES
+    ───────────────────────────── */
+    .pg { display: none; animation: up .22s ease both; }
+    .pg.on { display: block; }
+    @keyframes up { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+
+    /* ─────────────────────────────
+       PLATE DISPLAY
+    ───────────────────────────── */
+    .plate-wrap {
+      margin: 1.1rem 1.1rem 0;
+      background: #fff;
+      border-radius: 16px;
+      display: flex; align-items: stretch;
+      overflow: hidden; height: 70px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    .plate-eu {
+      background: linear-gradient(180deg, #003cb3, #0044cc);
+      width: 48px; flex-shrink: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 2px;
+    }
+    .plate-eu .es { color: #ffdd00; font-size: 0.85rem; }
+    .plate-eu .et { color: #fff; font-size: 0.62rem; font-weight: 800; }
+    .plate-num-wrap {
+      flex: 1; background: #fff;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .plate-num {
+      font-family: 'Space Grotesk', monospace;
+      font-size: 2rem; font-weight: 900;
+      letter-spacing: 0.12em; color: #111;
+    }
+    .plate-num.ph { font-size: 0.85rem; font-weight: 500; letter-spacing: 0; color: #aaa; font-family: 'Space Grotesk', sans-serif; }
+
+    /* ─────────────────────────────
+       SECTION CARDS
+    ───────────────────────────── */
+    .sec { padding: 1rem 1.1rem 0; }
+
+    .card {
+      background: var(--c1);
+      border: 1px solid var(--bdr);
+      border-radius: 20px;
+      overflow: hidden;
+      margin-bottom: 0.85rem;
+    }
+    .card-h {
+      padding: 0.85rem 1.15rem;
+      border-bottom: 1px solid var(--bdr);
+      display: flex; align-items: center; gap: 0.5rem;
+      font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--sub);
+    }
+    .card-h .pip {
+      width: 20px; height: 20px; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; flex-shrink: 0;
+    }
+    .pip-or { background: rgba(255,107,53,0.15); }
+    .pip-tl { background: rgba(0,212,170,0.15); }
+    .card-b { padding: 1.1rem 1.15rem; }
+
+    /* ─────────────────────────────
+       FIELDS
+    ───────────────────────────── */
+    .f { margin-bottom: 0.85rem; }
+    .f:last-child { margin-bottom: 0; }
+    .f label {
+      display: block;
+      font-size: 0.65rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.09em;
+      color: var(--sub); margin-bottom: 0.4rem;
+    }
+    input, select {
+      width: 100%;
+      background: var(--c2);
+      border: 1.5px solid var(--bdr);
+      border-radius: 12px;
+      color: var(--txt);
+      padding: 0.8rem 1rem;
+      font-size: 0.9rem; font-weight: 500;
+      font-family: 'Space Grotesk', sans-serif;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+      -webkit-appearance: none; appearance: none;
+    }
+    input:focus, select:focus {
+      border-color: rgba(255,107,53,0.5);
+      box-shadow: 0 0 0 3px rgba(255,107,53,0.1);
+    }
+    input.plate-i {
+      font-size: 1.3rem; font-weight: 800;
+      letter-spacing: 0.14em; text-align: center;
+      text-transform: uppercase; border-radius: 12px;
+    }
+    select option { background: var(--c2); }
+
+    /* ─────────────────────────────
+       BUTTONS
+    ───────────────────────────── */
+    .btn {
+      width: 100%; padding: 0.95rem;
+      border: none; border-radius: 14px;
+      font-size: 0.92rem; font-weight: 700;
+      font-family: 'Space Grotesk', sans-serif;
+      cursor: pointer; display: flex;
+      align-items: center; justify-content: center; gap: 0.5rem;
+      transition: all .15s; letter-spacing: -0.01em;
+    }
+    .btn:active:not(:disabled) { transform: scale(0.97); }
+    .btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+    .btn-or {
+      background: linear-gradient(135deg, var(--or), var(--or2));
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(255,107,53,0.3);
+    }
+    .btn-or:hover:not(:disabled) { box-shadow: 0 6px 28px rgba(255,107,53,0.45); }
+
+    .btn-tl {
+      background: linear-gradient(135deg, var(--tl), var(--tl2));
+      color: #003d2e;
+      box-shadow: 0 4px 20px rgba(0,212,170,0.25);
+    }
+    .btn-sm {
+      width: auto; padding: 0.45rem 0.85rem;
+      font-size: 0.75rem; border-radius: 9px;
+      background: var(--c2); border: 1px solid var(--bdr);
+      color: var(--txt);
+    }
+
+    /* ─────────────────────────────
+       HERO / SUMMARY
+    ───────────────────────────── */
+    .hero {
+      margin: 1.1rem 1.1rem 0;
+      border-radius: 22px;
+      padding: 1.4rem 1.4rem 1.2rem;
+      position: relative; overflow: hidden;
+      background: linear-gradient(135deg, #1a1430 0%, #1e2a20 100%);
+      border: 1px solid rgba(0,212,170,0.15);
+    }
+    .hero::before {
+      content: ''; position: absolute;
+      width: 180px; height: 180px;
+      background: radial-gradient(circle, rgba(0,212,170,0.15), transparent 70%);
+      top: -50px; right: -50px; pointer-events: none;
+    }
+    .hero-lbl { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--tl); margin-bottom: 0.5rem; }
+    .hero-num {
+      font-size: 2.8rem; font-weight: 900; letter-spacing: -0.04em; line-height: 1;
+      color: #fff;
+    }
+    .hero-num span { font-size: 1.2rem; font-weight: 600; color: var(--tl); }
+    .hero-row { display: flex; gap: 0.85rem; margin-top: 1.1rem; }
+    .hero-chip {
+      background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px; padding: 0.55rem 0.75rem;
+      flex: 1; text-align: center;
+    }
+    .hero-chip .hv { font-size: 0.95rem; font-weight: 800; }
+    .hero-chip .hl { font-size: 0.6rem; color: rgba(255,255,255,0.5); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 0.15rem; }
+
+    /* ─────────────────────────────
+       VEHICLE ROWS
+    ───────────────────────────── */
+    .vrow {
+      display: flex; align-items: center; gap: 0.85rem;
+      padding: 1rem 1.15rem;
+      border-bottom: 1px solid var(--bdr);
+      cursor: pointer; transition: background .15s;
+    }
+    .vrow:last-child { border-bottom: none; }
+    .vrow:active { background: rgba(255,107,53,0.04); }
+
+    .vico {
+      width: 44px; height: 44px; border-radius: 13px; flex-shrink: 0;
+      background: rgba(255,107,53,0.1); border: 1px solid rgba(255,107,53,0.15);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.25rem;
+    }
+    .vbody { flex: 1; min-width: 0; }
+    .vplate { font-size: 0.97rem; font-weight: 800; letter-spacing: 0.04em; }
+    .vmeta  { font-size: 0.68rem; color: var(--sub); margin-top: 0.2rem; font-weight: 500; }
+    .vtag {
+      font-size: 0.78rem; font-weight: 700;
+      padding: 0.28rem 0.65rem; border-radius: 8px; white-space: nowrap;
+    }
+    .tok { background: rgba(0,212,170,0.1); color: var(--tl); border: 1px solid rgba(0,212,170,0.2); }
+    .tlo { background: rgba(255,154,0,0.1); color: var(--or2); border: 1px solid rgba(255,154,0,0.2); }
+    .tng { background: rgba(255,107,53,0.1); color: var(--or); border: 1px solid rgba(255,107,53,0.2); }
+
+    /* ─────────────────────────────
+       PASSAGE ROWS
+    ───────────────────────────── */
+    .prow {
+      display: flex; align-items: center; gap: 0.85rem;
+      padding: 0.9rem 1.15rem;
+      border-bottom: 1px solid var(--bdr);
+    }
+    .prow:last-child { border-bottom: none; }
+    .pico {
+      width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+      background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.15);
+      display: flex; align-items: center; justify-content: center; font-size: 0.85rem;
+    }
+    .pbody { flex: 1; min-width: 0; }
+    .ploc  { font-size: 0.85rem; font-weight: 600; }
+    .pdate { font-size: 0.65rem; color: var(--sub); margin-top: 0.15rem; }
+    .pamt  { font-size: 0.95rem; font-weight: 800; color: var(--or); white-space: nowrap; }
+
+    /* ─────────────────────────────
+       MESSAGES
+    ───────────────────────────── */
+    .msg {
+      margin-top: 0.75rem; padding: 0.7rem 1rem;
+      border-radius: 12px; font-size: 0.82rem; font-weight: 500; line-height: 1.5;
+    }
+    .msg.ok  { background: rgba(0,212,170,0.08); color: var(--tl); border: 1px solid rgba(0,212,170,0.18); }
+    .msg.err { background: rgba(255,107,53,0.08); color: var(--or); border: 1px solid rgba(255,107,53,0.18); }
+
+    /* ─────────────────────────────
+       DIVIDER LABEL
+    ───────────────────────────── */
+    .dlbl {
+      padding: 1rem 1.1rem 0.6rem;
+      font-size: 0.62rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--sub); display: flex; align-items: center; gap: 0.5rem;
+    }
+    .dlbl::after { content: ''; flex: 1; height: 1px; background: var(--bdr); }
+
+    /* ─────────────────────────────
+       EMPTY STATE
+    ───────────────────────────── */
+    .empty {
+      text-align: center; padding: 2.5rem 1rem;
+      color: var(--sub); font-size: 0.85rem; font-weight: 500;
+    }
+    .empty-i { font-size: 2.2rem; margin-bottom: 0.6rem; filter: grayscale(1) opacity(.25); }
+
+    /* ─────────────────────────────
+       TOAST
+    ───────────────────────────── */
+    #toast {
+      position: fixed; bottom: 1.25rem; left: 50%;
+      transform: translateX(-50%) translateY(60px);
+      background: var(--c1); border: 1px solid var(--bdr);
+      color: var(--txt); padding: 0.7rem 1.25rem;
+      border-radius: 14px; font-size: 0.83rem; font-weight: 600;
+      transition: transform .32s cubic-bezier(0.34,1.56,0.64,1);
+      z-index: 999; max-width: 88%; text-align: center;
+      box-shadow: 0 12px 40px rgba(0,0,0,.5);
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+
+    .sp { width:16px; height:16px; border:2px solid rgba(255,255,255,.25); border-top-color:#fff; border-radius:50%; animation:spin .6s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+
+    .gap { height: 1.5rem; }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <div class="logo-sq">🛣️</div>
+    <div class="logo-text">
+      <div class="n">HGS Filo</div>
+      <div class="s">Geçiş Takip Sistemi</div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:0.5rem">
+    <div class="api-badge">
+      <div class="adot" id="adot"></div>
+      <span id="albl">Bağlanıyor</span>
+    </div>
+    <div class="api-badge" style="cursor:pointer;gap:0.4rem" onclick="logout()" title="Çıkış">
+      <span id="uname" style="color:var(--txt)">—</span>
+      <span>✕</span>
+    </div>
+  </div>
+</header>
+
+<!-- TAB BAR -->
+<div class="tabbar">
+  <div class="tb on" id="tb-gecis" onclick="go('gecis',this)">
+    <span class="ico">➕</span>Geçiş
+  </div>
+  <div class="tb" id="tb-filo" onclick="go('filo',this)">
+    <span class="ico">📊</span>Filo
+  </div>
+  <div class="tb" id="tb-arac" onclick="go('arac',this)">
+    <span class="ico">⚙️</span>Araç
+  </div>
+</div>
+
+<!-- BODY -->
+<div class="body">
+
+  <!-- ════ GEÇİŞ ════ -->
+  <div id="pg-gecis" class="pg on">
+
+    <div class="plate-wrap">
+      <div class="plate-eu">
+        <div class="es">★</div>
+        <div class="et">TR</div>
+      </div>
+      <div class="plate-num-wrap">
+        <div class="plate-num ph" id="pd">PLAKA GİRİN</div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="card">
+        <div class="card-h">
+          <div class="pip pip-or">🗺️</div>
+          Geçiş Bilgileri
+        </div>
+        <div class="card-b">
+          <div class="f">
+            <label>Plaka</label>
+            <input class="plate-i" type="text" id="g-plate" placeholder="34 ABC 123"
+              oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'');syncPD(this.value)">
+          </div>
+          <div class="f">
+            <label>Geçiş Noktası</label>
+            <select id="g-loc">
+              <option value="">— Seçin —</option>
+              <option>Osmangazi Köprüsü</option>
+              <option>Fatih Sultan Mehmet Köprüsü</option>
+              <option>Boğaziçi Köprüsü</option>
+              <option>Avrasya Tüneli</option>
+              <option>Yavuz Sultan Selim Köprüsü</option>
+              <option>İzmir–İstanbul Otoyolu</option>
+              <option>Kuzey Marmara Otoyolu</option>
+              <option>Kınalı–Sakarya Otoyolu</option>
+              <option>Diğer</option>
+            </select>
+          </div>
+          <div class="f" id="glc-wrap" style="display:none">
+            <label>Özel Konum</label>
+            <input type="text" id="g-lc" placeholder="Konum adı...">
+          </div>
+          <div class="f">
+            <label>Tutar (₺)</label>
+            <input type="number" id="g-amt" placeholder="0,00" step="0.01" min="0" inputmode="decimal">
+          </div>
+          <div class="f">
+            <label>Not</label>
+            <input type="text" id="g-not" placeholder="Açıklama... (isteğe bağlı)">
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-or" id="btn-save" onclick="savePass()">
+        Geçişi Kaydet
+      </button>
+      <div id="g-msg"></div>
+    </div>
+    <div class="gap"></div>
+  </div>
+
+  <!-- ════ FİLO ════ -->
+  <div id="pg-filo" class="pg">
+
+    <div class="hero">
+      <div class="hero-lbl">Toplam Bakiye</div>
+      <div class="hero-num" id="f-bal">— <span>₺</span></div>
+      <div class="hero-row">
+        <div class="hero-chip">
+          <div class="hv" id="f-arac">—</div>
+          <div class="hl">Araç</div>
+        </div>
+        <div class="hero-chip">
+          <div class="hv" id="f-sp">—</div>
+          <div class="hl">Harcama</div>
+        </div>
+        <div class="hero-chip">
+          <div class="hv" id="f-gc">—</div>
+          <div class="hl">Geçiş</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dlbl">Araçlar</div>
+    <div class="card" style="margin:0 1.1rem">
+      <div id="vlist">
+        <div class="empty"><div class="empty-i">🚗</div>Yükleniyor...</div>
+      </div>
+    </div>
+
+    <div id="psec" style="display:none">
+      <div class="dlbl" id="ptitle">Geçişler</div>
+      <div class="card" style="margin:0 1.1rem">
+        <div id="plist">
+          <div class="empty">Yükleniyor...</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gap"></div>
+  </div>
+
+  <!-- ════ ARAÇ ════ -->
+  <div id="pg-arac" class="pg">
+
+    <div class="sec">
+      <div class="card">
+        <div class="card-h">
+          <div class="pip pip-or">➕</div>
+          Yeni Araç Ekle
+        </div>
+        <div class="card-b">
+          <div class="f">
+            <label>Plaka *</label>
+            <input class="plate-i" type="text" id="a-plate" placeholder="34ABC123"
+              oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')">
+          </div>
+          <div class="f">
+            <label>HGS Tag No</label>
+            <input type="text" id="a-hgs" placeholder="HGS-001">
+          </div>
+          <div class="f">
+            <label>Sürücü / Sahip</label>
+            <input type="text" id="a-own" placeholder="Ad Soyad">
+          </div>
+          <div class="f">
+            <label>Başlangıç Bakiyesi (₺)</label>
+            <input type="number" id="a-bal" placeholder="0,00" step="0.01" inputmode="decimal">
+          </div>
+          <button class="btn btn-or" onclick="addVeh()">Araç Ekle</button>
+          <div id="a-msg"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-h">
+          <div class="pip pip-tl">💰</div>
+          Bakiye Güncelle
+        </div>
+        <div class="card-b">
+          <div class="f">
+            <label>Plaka</label>
+            <input class="plate-i" type="text" id="u-plate" placeholder="34ABC123"
+              oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')">
+          </div>
+          <div class="f">
+            <label>Yeni Bakiye (₺)</label>
+            <input type="number" id="u-bal" placeholder="0,00" step="0.01" inputmode="decimal">
+          </div>
+          <button class="btn btn-tl" onclick="updBal()">Bakiye Güncelle</button>
+          <div id="u-msg"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gap"></div>
+  </div>
+
+</div><!-- /body -->
+<div id="toast"></div>
+
+<script>
+const API = "http://localhost:8000";
+
+// ── AUTH GUARD ──
+const token = localStorage.getItem("hgs_token");
+const user  = JSON.parse(localStorage.getItem("hgs_user") || "{}");
+if (!token) location.href = "login.html?to=index.html";
+
+function logout() {
+  localStorage.removeItem("hgs_token");
+  localStorage.removeItem("hgs_user");
+  location.href = "login.html";
+}
+
+async function api(m, p, b) {
+  try {
+    const r = await fetch(API + p, {
+      method: m,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token
+      },
+      body: b ? JSON.stringify(b) : undefined
+    });
+    if (r.status === 401) { logout(); return; }
+    if (!r.ok) { const e = await r.json(); throw new Error(e.detail || "Hata"); }
+    return r.json();
+  } catch(e) {
+    if (e.message === "Failed to fetch") throw new Error("API bağlantısı yok");
+    throw e;
+  }
+}
+
+async function ping() {
+  try {
+    await fetch(API + "/vehicles");
+    document.getElementById("adot").className = "adot on";
+    document.getElementById("albl").textContent = "Bağlı";
+  } catch {
+    document.getElementById("adot").className = "adot off";
+    document.getElementById("albl").textContent = "Bağlantı yok";
+  }
+}
+
+function go(name, el) {
+  document.querySelectorAll(".pg").forEach(p => p.classList.remove("on"));
+  document.querySelectorAll(".tb").forEach(t => t.classList.remove("on"));
+  document.getElementById("pg-" + name).classList.add("on");
+  el.classList.add("on");
+  document.querySelector(".body").scrollTop = 0;
+  if (name === "filo") loadFilo();
+}
+
+function toast(msg, ms = 2400) {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), ms);
+}
+
+/* ── PLATE SYNC ── */
+function syncPD(v) {
+  const el = document.getElementById("pd");
+  if (v.length >= 5) { el.textContent = v; el.className = "plate-num"; }
+  else { el.textContent = v || "PLAKA GİRİN"; el.className = "plate-num ph"; }
+}
+
+/* ── GEÇİŞ ── */
+document.getElementById("g-loc").addEventListener("change", function() {
+  document.getElementById("glc-wrap").style.display = this.value === "Diğer" ? "block" : "none";
+});
+
+async function savePass() {
+  const plate  = document.getElementById("g-plate").value.trim().toUpperCase();
+  const ls     = document.getElementById("g-loc").value;
+  const loc    = ls === "Diğer" ? document.getElementById("g-lc").value.trim() : ls;
+  const amount = parseFloat(document.getElementById("g-amt").value);
+  const note   = document.getElementById("g-not").value.trim();
+
+  if (!plate)          { setMsg("g", "err", "Plaka zorunlu"); return; }
+  if (!loc)            { setMsg("g", "err", "Geçiş noktası seçin"); return; }
+  if (!amount||amount<=0) { setMsg("g", "err", "Geçerli tutar girin"); return; }
+
+  const btn = document.getElementById("btn-save");
+  btn.disabled = true;
+  btn.innerHTML = '<div class="sp"></div>Kaydediliyor...';
+  try {
+    await api("POST", "/passages", { plate, location:loc, amount, note:note||undefined });
+    setMsg("g", "ok", `✓ ${plate} · ${loc} · ${tl(amount)}`);
+    toast("✅ Geçiş kaydedildi");
+    document.getElementById("g-amt").value = "";
+    document.getElementById("g-not").value = "";
+  } catch(e) { setMsg("g", "err", "❌ " + e.message); }
+  btn.disabled = false;
+  btn.textContent = "Geçişi Kaydet";
+}
+
+/* ── FİLO ── */
+async function loadFilo() {
+  try {
+    const fleet = await api("GET", "/reports");
+    const tBal  = fleet.reduce((s,v) => s + v.balance, 0);
+    const tSp   = fleet.reduce((s,v) => s + v.total_spent, 0);
+    const tGc   = fleet.reduce((s,v) => s + v.total_passages, 0);
+
+    document.getElementById("f-bal").innerHTML = fmt(tBal) + ' <span>₺</span>';
+    document.getElementById("f-arac").textContent = fleet.length;
+    document.getElementById("f-sp").textContent = tl(tSp);
+    document.getElementById("f-gc").textContent = tGc;
+
+    if (!fleet.length) {
+      document.getElementById("vlist").innerHTML =
+        '<div class="empty"><div class="empty-i">🚗</div>Henüz araç yok</div>';
+      return;
+    }
+    document.getElementById("vlist").innerHTML = fleet.map(v => {
+      const c = v.balance > 100 ? "tok" : v.balance > 0 ? "tlo" : "tng";
+      return `
+        <div class="vrow" onclick="loadP('${v.plate}','${v.owner_name||''}')">
+          <div class="vico">🚗</div>
+          <div class="vbody">
+            <div class="vplate">${v.plate}</div>
+            <div class="vmeta">${v.owner_name||'İsimsiz'} · ${v.hgs_tag||'—'} · ${v.total_passages} geçiş · ${tl(v.total_spent)}</div>
+          </div>
+          <div class="vtag ${c}">${tl(v.balance)}</div>
+        </div>`;
+    }).join("");
+  } catch(e) {
+    document.getElementById("vlist").innerHTML =
+      `<div class="empty"><div class="empty-i">⚡</div>${e.message}</div>`;
+  }
+}
+
+async function loadP(plate, owner) {
+  const sec = document.getElementById("psec");
+  sec.style.display = "block";
+  document.getElementById("ptitle").textContent = `${plate}${owner ? " · " + owner : ""}`;
+  document.getElementById("plist").innerHTML = '<div class="empty">Yükleniyor...</div>';
+  try {
+    const ps = await api("GET", `/passages?plate=${plate}`);
+    if (!ps.length) {
+      document.getElementById("plist").innerHTML = '<div class="empty"><div class="empty-i">🛣️</div>Geçiş yok</div>';
+      return;
+    }
+    document.getElementById("plist").innerHTML = ps.map(p => `
+      <div class="prow">
+        <div class="pico">🛣️</div>
+        <div class="pbody">
+          <div class="ploc">${p.location}</div>
+          <div class="pdate">${dt(p.passed_at)}${p.note ? " · "+p.note : ""}</div>
+        </div>
+        <div class="pamt">${tl(p.amount)}</div>
+      </div>`).join("");
+  } catch(e) {
+    document.getElementById("plist").innerHTML = `<div class="empty">${e.message}</div>`;
+  }
+  sec.scrollIntoView({ behavior: "smooth" });
+}
+
+/* ── ARAÇ ── */
+async function addVeh() {
+  const plate = document.getElementById("a-plate").value.trim().toUpperCase();
+  const hgs   = document.getElementById("a-hgs").value.trim();
+  const own   = document.getElementById("a-own").value.trim();
+  const bal   = parseFloat(document.getElementById("a-bal").value) || 0;
+  if (!plate) { setMsg("a", "err", "Plaka zorunlu"); return; }
+  try {
+    await api("POST", "/vehicles", { plate, hgs_tag:hgs||undefined, owner_name:own||undefined, balance:bal });
+    setMsg("a", "ok", `✓ ${plate} eklendi`);
+    toast("Araç eklendi: " + plate);
+    ["a-plate","a-hgs","a-own","a-bal"].forEach(id => document.getElementById(id).value = "");
+  } catch(e) { setMsg("a", "err", "❌ " + e.message); }
+}
+
+async function updBal() {
+  const plate = document.getElementById("u-plate").value.trim().toUpperCase();
+  const bal   = parseFloat(document.getElementById("u-bal").value);
+  if (!plate || isNaN(bal)) { setMsg("u", "err", "Plaka ve bakiye girin"); return; }
+  try {
+    const v = await api("PUT", `/vehicles/${plate}`, { balance: bal });
+    setMsg("u", "ok", `✓ ${v.plate} → ${tl(v.balance)}`);
+    toast("Bakiye güncellendi");
+  } catch(e) { setMsg("u", "err", "❌ " + e.message); }
+}
+
+/* ── UTILS ── */
+function setMsg(id, type, text) {
+  document.getElementById(id + "-msg").innerHTML = `<div class="msg ${type}">${text}</div>`;
+}
+function tl(n)  { return n.toFixed(2).replace(".", ",") + " ₺"; }
+function fmt(n) { return Math.round(n).toLocaleString("tr-TR"); }
+function dt(s) {
+  try {
+    const d = new Date(s);
+    return d.toLocaleDateString("tr-TR") + " " +
+           d.toLocaleTimeString("tr-TR", { hour:"2-digit", minute:"2-digit" });
+  } catch { return s; }
+}
+
+// Kullanıcı adını göster
+document.getElementById("uname").textContent = user.full_name || user.username || "—";
+
+ping();
+setInterval(ping, 10000);
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
+</script>
+</body>
+</html>
