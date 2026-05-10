@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Admin Girişi — HGS Filo</title>
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:#0b0e1a; --s1:#111828; --s2:#1a2035;
+      --tl:#00d4aa; --txt:#eef2ff; --sub:#6b7a99;
+      --bdr:rgba(255,255,255,0.06);
+      --acc:#8b5cf6; --acc2:#a78bfa;
+    }
+    html,body { height:100%; }
+    body {
+      background:var(--bg); color:var(--txt);
+      font-family:'Space Grotesk',sans-serif;
+      display:flex; align-items:center; justify-content:center;
+      min-height:100vh; padding:1.25rem;
+    }
+    body::before {
+      content:''; position:fixed; inset:0; pointer-events:none;
+      background:
+        radial-gradient(ellipse 70% 50% at 10% 10%,rgba(139,92,246,.1) 0%,transparent 60%),
+        radial-gradient(ellipse 50% 40% at 90% 90%,rgba(139,92,246,.07) 0%,transparent 60%);
+    }
+    .box { width:100%; max-width:400px; position:relative; z-index:1; }
+    .brand { text-align:center; margin-bottom:2rem; }
+    .brand-mark {
+      width:68px; height:68px; border-radius:20px;
+      background:linear-gradient(135deg,var(--acc),var(--acc2));
+      display:inline-flex; align-items:center; justify-content:center;
+      font-size:2rem; margin-bottom:1rem;
+      box-shadow:0 8px 32px rgba(139,92,246,.35);
+    }
+    .brand h1 { font-size:1.5rem; font-weight:800; letter-spacing:-.03em; }
+    .brand p  { font-size:.78rem; color:var(--sub); margin-top:.3rem; font-weight:500; }
+    .badge {
+      display:inline-flex; align-items:center; gap:.35rem;
+      background:rgba(139,92,246,.12); border:1px solid rgba(139,92,246,.25);
+      color:var(--acc2); border-radius:20px; padding:.25rem .8rem;
+      font-size:.68rem; font-weight:700; letter-spacing:.05em;
+      text-transform:uppercase; margin-top:.5rem;
+    }
+    .card { background:var(--s1); border:1px solid var(--bdr); border-radius:24px; padding:2rem; }
+    .card-head {
+      font-size:1rem; font-weight:800; margin-bottom:1.5rem;
+      padding-bottom:1rem; border-bottom:1px solid var(--bdr);
+      display:flex; align-items:center; gap:.55rem;
+    }
+    .card-head .lock {
+      width:28px; height:28px; border-radius:8px;
+      background:rgba(139,92,246,.15);
+      display:flex; align-items:center; justify-content:center; font-size:.9rem;
+    }
+    .field { margin-bottom:1rem; }
+    label {
+      display:block; font-size:.65rem; font-weight:700;
+      text-transform:uppercase; letter-spacing:.09em;
+      color:var(--sub); margin-bottom:.4rem;
+    }
+    input[type=email],input[type=password],input[type=text] {
+      width:100%; background:var(--s2); border:1.5px solid var(--bdr);
+      border-radius:12px; color:var(--txt); padding:.85rem 1rem;
+      font-size:.95rem; font-weight:500; font-family:'Space Grotesk',sans-serif;
+      outline:none; transition:border-color .2s,box-shadow .2s;
+    }
+    input[type=email]:focus,input[type=password]:focus,input[type=text]:focus {
+      border-color:rgba(139,92,246,.5); box-shadow:0 0 0 3px rgba(139,92,246,.1);
+    }
+    .btn {
+      width:100%; padding:.95rem; border:none; border-radius:14px;
+      font-size:.92rem; font-weight:700; font-family:'Space Grotesk',sans-serif;
+      cursor:pointer; display:flex; align-items:center; justify-content:center;
+      gap:.5rem; transition:all .15s; margin-top:1.25rem;
+    }
+    .btn:active { transform:scale(.97); }
+    .btn:disabled { opacity:.4; cursor:not-allowed; }
+    .btn-acc { background:linear-gradient(135deg,var(--acc),var(--acc2)); color:#fff; box-shadow:0 4px 20px rgba(139,92,246,.35); }
+    .btn-ghost { background:var(--s2); border:1px solid var(--bdr); color:var(--txt); }
+
+    .msg { padding:.7rem 1rem; border-radius:12px; font-size:.82rem; font-weight:500; margin-top:.75rem; line-height:1.5; }
+    .msg.err  { background:rgba(255,107,53,.08); color:#ff6b35; border:1px solid rgba(255,107,53,.2); }
+    .msg.ok   { background:rgba(0,212,170,.08); color:var(--tl); border:1px solid rgba(0,212,170,.2); }
+    .msg.warn { background:rgba(139,92,246,.08); color:var(--acc2); border:1px solid rgba(139,92,246,.2); }
+
+    .sp { width:16px; height:16px; border:2px solid rgba(255,255,255,.25); border-top-color:#fff; border-radius:50%; animation:spin .6s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+
+    /* OTP kutuları */
+    .otp-row { display:flex; gap:.5rem; justify-content:center; margin:.75rem 0; }
+    .otp-box {
+      width:48px; height:58px; background:var(--s2);
+      border:2px solid var(--bdr); border-radius:14px;
+      font-size:1.6rem; font-weight:900; text-align:center;
+      color:var(--txt); font-family:'Space Grotesk',sans-serif;
+      outline:none; transition:border-color .2s,box-shadow .2s;
+      caret-color:var(--acc2);
+    }
+    .otp-box:focus { border-color:var(--acc); box-shadow:0 0 0 3px rgba(139,92,246,.15); }
+
+    .otp-hint { font-size:.75rem; color:var(--sub); text-align:center; margin-top:.25rem; }
+    .otp-email { font-weight:700; color:var(--acc2); }
+
+    .timer-row { display:flex; align-items:center; justify-content:center; gap:.5rem; margin-top:.6rem; }
+    .timer-txt { font-size:.72rem; color:var(--sub); }
+    .resend-btn {
+      background:none; border:none; color:var(--acc2); font-size:.72rem;
+      font-weight:700; font-family:'Space Grotesk',sans-serif;
+      cursor:pointer; padding:0; text-decoration:underline;
+    }
+    .resend-btn:disabled { color:var(--sub); text-decoration:none; cursor:default; }
+
+    .step { display:none; }
+    .step.on { display:block; }
+    .back-link {
+      display:flex; align-items:center; justify-content:center; gap:.4rem;
+      margin-top:1.25rem; font-size:.75rem; font-weight:600;
+      color:var(--sub); text-decoration:none; transition:color .2s; cursor:pointer;
+    }
+    .back-link:hover { color:var(--acc2); }
+    .sep { display:flex; align-items:center; gap:.75rem; margin:1.25rem 0 0; font-size:.7rem; color:var(--sub); }
+    .sep::before,.sep::after { content:''; flex:1; height:1px; background:var(--bdr); }
+  </style>
+</head>
+<body>
+<div class="box">
+  <div class="brand">
+    <div class="brand-mark">🔑</div>
+    <h1>Admin Paneli</h1>
+    <p>HGS Filo Yönetim Sistemi</p>
+    <div class="badge">🛡️ 2 Adımlı Doğrulama</div>
+  </div>
+
+  <div class="card">
+
+    <!-- ADIM 1: Giriş -->
+    <div class="step on" id="step-login">
+      <div class="card-head"><div class="lock">🔐</div>Yönetici Girişi</div>
+      <div class="field">
+        <label>E-posta</label>
+        <input type="email" id="email" autocomplete="email" placeholder="admin@sirket.com"
+          onkeydown="if(event.key==='Enter')document.getElementById('password').focus()">
+      </div>
+      <div class="field">
+        <label>Şifre</label>
+        <input type="password" id="password" autocomplete="current-password" placeholder="••••••••"
+          onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <button class="btn btn-acc" id="btn-login" onclick="doLogin()">🔑 Giriş Yap</button>
+      <div id="msg-login"></div>
+      <div class="sep">veya</div>
+      <a class="back-link" href="login.html">← Kullanıcı girişine dön</a>
+    </div>
+
+    <!-- ADIM 2: OTP Kodu -->
+    <div class="step" id="step-otp">
+      <div class="card-head"><div class="lock">📱</div>E-posta Doğrulama</div>
+      <div class="otp-hint" style="margin-bottom:.75rem">
+        <span id="otp-email-lbl" class="otp-email">—</span> adresine<br>6 haneli doğrulama kodu gönderildi.
+      </div>
+      <div class="otp-row" id="otp-row">
+        <input class="otp-box" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]">
+        <input class="otp-box" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]">
+        <input class="otp-box" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]">
+        <input class="otp-box" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]">
+        <input class="otp-box" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]">
+        <input class="otp-box" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]">
+      </div>
+      <div class="timer-row">
+        <span class="timer-txt" id="timer-txt">Kod 10 dakika geçerlidir</span>
+        <button class="resend-btn" id="resend-btn" onclick="resendOtp()" disabled>Tekrar Gönder</button>
+      </div>
+      <button class="btn btn-acc" id="btn-verify" onclick="verifyOtp()">✓ Doğrula ve Giriş Yap</button>
+      <div id="msg-otp"></div>
+      <a class="back-link" onclick="showStep('login')">← Geri Dön</a>
+    </div>
+
+  </div>
+</div>
+
+<!-- EmailJS -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
+/* ══════════════════════════════════════════
+   EmailJS Ayarları — emailjs.com'dan al
+   1) emailjs.com'a ücretsiz kayıt ol
+   2) Email Services → Gmail/SMTP bağla → Service ID al
+   3) Email Templates → Yeni template oluştur:
+      Konu: HGS Admin Doğrulama Kodu
+      İçerik: Kodunuz: {{otp_code}}  (10 dk geçerli)
+      → Template ID al
+   4) Account → General → Public Key al
+══════════════════════════════════════════ */
+const EJS_PUBLIC_KEY  = "izOgm3uXqZ8QhOLdG";
+const EJS_SERVICE_ID  = "service_e4phq0e";
+const EJS_TEMPLATE_ID = "template_9cfbuls";
+
+emailjs.init(EJS_PUBLIC_KEY);
+
+const firebaseConfig = {
+  apiKey: "AIzaSyB6JddjggHwCbK076wGLhZuWN3bQpwPbGk",
+  authDomain: "hgs-system.firebaseapp.com",
+  projectId: "hgs-system",
+  storageBucket: "hgs-system.firebasestorage.app",
+  messagingSenderId: "667151410768",
+  appId: "1:667151410768:web:ebd17e5b7cc2e7f4991355"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db   = firebase.firestore();
+
+let _currentUser = null;
+let _otpCode     = null;
+let _otpExpiry   = null;
+let _resendTimer = null;
+
+/* ── ADIM 1: Şifre Girişi ── */
+async function doLogin() {
+  const email    = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  if (!email || !password) { showMsg("login","err","E-posta ve şifre girin"); return; }
+
+  const btn = document.getElementById("btn-login");
+  btn.disabled = true;
+  btn.innerHTML = '<div class="sp"></div>Doğrulanıyor...';
+
+  try {
+    await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+    const cred = await auth.signInWithEmailAndPassword(email, password);
+
+    const doc = await db.collection("user").doc(cred.user.uid).get();
+    if (doc.data()?.role !== "admin") {
+      await auth.signOut();
+      showMsg("login","err","❌ Bu hesabın yönetici yetkisi yok.");
+      btn.disabled = false; btn.innerHTML = "🔑 Giriş Yap";
+      return;
+    }
+
+    _currentUser = cred.user;
+    showMsg("login","warn","📧 Doğrulama kodu gönderiliyor...");
+    await sendOtp(email);
+
+    document.getElementById("otp-email-lbl").textContent = email;
+    showStep("otp");
+    focusFirstOtp();
+    startResendTimer(60);
+
+  } catch(e) {
+    let msg = "❌ E-posta veya şifre hatalı";
+    if (e.code === "auth/too-many-requests") msg = "❌ Çok fazla deneme. Lütfen bekleyin.";
+    showMsg("login","err", msg);
+    btn.disabled = false; btn.innerHTML = "🔑 Giriş Yap";
+  }
+}
+
+/* ── OTP Gönder ── */
+async function sendOtp(email) {
+  _otpCode   = String(Math.floor(100000 + Math.random() * 900000));
+  _otpExpiry = Date.now() + 10 * 60 * 1000; // 10 dk
+
+  // Firestore'a kaydet (yedek doğrulama için)
+  if (_currentUser) {
+    await db.collection("admin_otp").doc(_currentUser.uid).set({
+      code: _otpCode,
+      expires: _otpExpiry,
+      email
+    });
+  }
+
+  // EmailJS ile gönder
+  await emailjs.send(EJS_SERVICE_ID, EJS_TEMPLATE_ID, {
+    to_email: email,
+    otp_code: _otpCode
+  });
+}
+
+/* ── ADIM 2: OTP Doğrulama ── */
+async function verifyOtp() {
+  const boxes = document.querySelectorAll(".otp-box");
+  const entered = [...boxes].map(b => b.value).join("");
+  if (entered.length < 6) { showMsg("otp","err","6 haneli kodu girin"); return; }
+
+  const btn = document.getElementById("btn-verify");
+  btn.disabled = true;
+  btn.innerHTML = '<div class="sp"></div>Doğrulanıyor...';
+
+  try {
+    // Firestore'dan kontrol et
+    const doc = await db.collection("admin_otp").doc(_currentUser.uid).get();
+    const data = doc.data();
+
+    if (!data || data.code !== entered) {
+      showMsg("otp","err","❌ Kod hatalı. Tekrar deneyin.");
+      btn.disabled = false; btn.innerHTML = "✓ Doğrula ve Giriş Yap";
+      boxes.forEach(b => { b.value=""; b.style.borderColor="rgba(255,107,53,.5)"; });
+      focusFirstOtp();
+      return;
+    }
+    if (Date.now() > data.expires) {
+      showMsg("otp","err","❌ Kodun süresi dolmuş. Tekrar gönderin.");
+      btn.disabled = false; btn.innerHTML = "✓ Doğrula ve Giriş Yap";
+      return;
+    }
+
+    // Kullanılmış kodu sil
+    await db.collection("admin_otp").doc(_currentUser.uid).delete();
+
+    showMsg("otp","ok","✅ Doğrulama başarılı! Yönlendiriliyorsunuz...");
+    setTimeout(() => location.href = "admin.html", 800);
+
+  } catch(e) {
+    showMsg("otp","err","❌ Doğrulama hatası: " + e.message);
+    btn.disabled = false; btn.innerHTML = "✓ Doğrula ve Giriş Yap";
+  }
+}
+
+/* ── Tekrar Gönder ── */
+async function resendOtp() {
+  const email = document.getElementById("otp-email-lbl").textContent;
+  const btn = document.getElementById("resend-btn");
+  btn.disabled = true;
+  try {
+    await sendOtp(email);
+    showMsg("otp","ok","✅ Yeni kod gönderildi.");
+    document.querySelectorAll(".otp-box").forEach(b => b.value = "");
+    focusFirstOtp();
+    startResendTimer(60);
+  } catch(e) {
+    showMsg("otp","err","❌ Gönderilemedi.");
+    btn.disabled = false;
+  }
+}
+
+/* ── Timer ── */
+function startResendTimer(sec) {
+  clearInterval(_resendTimer);
+  const btn = document.getElementById("resend-btn");
+  const lbl = document.getElementById("timer-txt");
+  btn.disabled = true;
+  _resendTimer = setInterval(() => {
+    sec--;
+    lbl.textContent = sec > 0 ? `${sec} saniye sonra tekrar gönderin` : "Kod 10 dakika geçerlidir";
+    if (sec <= 0) { clearInterval(_resendTimer); btn.disabled = false; }
+  }, 1000);
+}
+
+/* ── OTP Kutu Yönetimi ── */
+function focusFirstOtp() {
+  document.querySelector(".otp-box")?.focus();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const boxes = [...document.querySelectorAll(".otp-box")];
+  boxes.forEach((box, i) => {
+    box.addEventListener("input", e => {
+      box.style.borderColor = "";
+      const v = box.value.replace(/\D/g,"");
+      box.value = v.slice(-1);
+      if (v && i < boxes.length - 1) boxes[i+1].focus();
+      if (i === boxes.length - 1 && v) verifyOtp();
+    });
+    box.addEventListener("keydown", e => {
+      if (e.key === "Backspace" && !box.value && i > 0) boxes[i-1].focus();
+      if (e.key === "Enter") verifyOtp();
+    });
+    box.addEventListener("paste", e => {
+      e.preventDefault();
+      const pasted = (e.clipboardData || window.clipboardData).getData("text").replace(/\D/g,"");
+      pasted.split("").slice(0,6).forEach((c,j) => { if (boxes[i+j]) boxes[i+j].value = c; });
+      const next = Math.min(i + pasted.length, boxes.length - 1);
+      boxes[next].focus();
+    });
+  });
+});
+
+/* ── Yardımcı ── */
+function showStep(name) {
+  document.querySelectorAll(".step").forEach(s => s.classList.remove("on"));
+  document.getElementById("step-" + name).classList.add("on");
+  if (name === "login") {
+    const btn = document.getElementById("btn-login");
+    btn.disabled = false; btn.innerHTML = "🔑 Giriş Yap";
+    document.getElementById("msg-login").innerHTML = "";
+    if (_currentUser) { auth.signOut(); _currentUser = null; }
+  }
+}
+
+function showMsg(step, type, text) {
+  document.getElementById("msg-" + step).innerHTML = `<div class="msg ${type}">${text}</div>`;
+}
+</script>
+</body>
+</html>

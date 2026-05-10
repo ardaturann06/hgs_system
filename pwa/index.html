@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>HGS Filo</title>
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0b0e1a">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -23,6 +24,7 @@
       --sub:  #6b7a99;
       --dim:  #252d45;
       --bdr:  rgba(255,255,255,0.06);
+      --glow: rgba(255,107,53,0.07);
     }
 
     html, body { height: 100%; }
@@ -38,7 +40,7 @@
     body::before {
       content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
       background:
-        radial-gradient(ellipse 70% 40% at 15% -10%, rgba(255,107,53,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 70% 40% at 15% -10%, var(--glow) 0%, transparent 70%),
         radial-gradient(ellipse 50% 40% at 85% 110%, rgba(0,212,170,0.06) 0%, transparent 60%);
     }
 
@@ -74,26 +76,7 @@
     .adot.on  { background: var(--tl); box-shadow: 0 0 7px var(--tl); }
     .adot.off { background: var(--or); }
 
-    /* ─────────────────────────────
-       TAB BAR (top)
-    ───────────────────────────── */
-    .tabbar {
-      flex-shrink: 0; position: relative; z-index: 15;
-      display: flex; gap: 0;
-      background: var(--c1);
-      border-bottom: 1px solid var(--bdr);
-    }
-    .tb {
-      flex: 1; padding: 0.85rem 0.5rem;
-      text-align: center; font-size: 0.75rem; font-weight: 700;
-      cursor: pointer; color: var(--sub);
-      border-bottom: 2px solid transparent;
-      transition: all 0.2s; display: flex; flex-direction: column;
-      align-items: center; gap: 0.2rem;
-      text-transform: uppercase; letter-spacing: 0.05em;
-    }
-    .tb .ico { font-size: 1.1rem; }
-    .tb.on { color: var(--or); border-bottom-color: var(--or); }
+    /* Tab bar removed - navigation via drawer + bottom nav */
 
     /* ─────────────────────────────
        SCROLL AREA
@@ -111,6 +94,58 @@
     /* ─────────────────────────────
        PLATE DISPLAY
     ───────────────────────────── */
+    /* ── LIGHT THEME ── */
+    [data-theme="light"] {
+      --bg:#f5f7fb; --c1:#ffffff; --c2:#eef1f8; --txt:#1a2035;
+      --sub:#6b7a99; --bdr:rgba(0,0,0,0.09); --dim:#d8dce8;
+    }
+    [data-theme="light"] body::before { display:none; }
+
+    /* ── TOGGLE SWITCH ── */
+    .sw-row { display:flex;align-items:center;justify-content:space-between;padding:.95rem 1.25rem;border-bottom:1px solid var(--bdr); }
+    .sw-row:last-child { border-bottom:none; }
+    .sw-lbl { display:flex;align-items:center;gap:.7rem;font-weight:700;font-size:.9rem; }
+    .sw-lbl span { font-size:1.15rem; }
+    .sw { position:relative;width:44px;height:26px;flex-shrink:0; }
+    .sw input { opacity:0;width:0;height:0; }
+    .sw-sl { position:absolute;inset:0;background:var(--dim);border-radius:26px;cursor:pointer;transition:.2s; }
+    .sw-sl::before { content:'';position:absolute;width:20px;height:20px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 4px rgba(0,0,0,.3); }
+    .sw input:checked + .sw-sl { background:var(--or); }
+    .sw input:checked + .sw-sl::before { transform:translateX(18px); }
+
+    /* ── AYARLAR ── */
+    .ay-sec-title { font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--sub);margin:1rem 0 .4rem; }
+    .ay-card { background:var(--c1);border:1px solid var(--bdr);border-radius:20px;overflow:hidden;margin-bottom:.5rem; }
+
+    /* ── ARAÇ SEÇİCİ ── */
+    .vsel-wrap { padding: .75rem 1.1rem .5rem; }
+    .vsel-label { font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--sub);margin-bottom:.4rem; }
+    .vsel-toggle { display:flex;align-items:center;justify-content:space-between;background:var(--c1);border:1.5px solid var(--bdr);border-radius:14px;padding:.7rem 1rem;cursor:pointer;user-select:none; }
+    .vsel-toggle-lbl { display:flex;align-items:center;gap:.5rem;font-size:.95rem;font-weight:700; }
+    .vsel-arrow-btn { background:var(--or);border:none;border-radius:8px;color:#fff;width:28px;height:28px;cursor:pointer;font-size:.85rem;display:flex;align-items:center;justify-content:center;transition:transform .2s;flex-shrink:0; }
+    .vsel-panel { display:none;margin-top:.4rem;background:var(--c1);border:1.5px solid var(--bdr);border-radius:14px;padding:.6rem;max-height:220px;overflow-y:auto; }
+    .vsel-panel.open { display:block; }
+    .vsel-grid { display:flex;flex-wrap:wrap;gap:.4rem; }
+    .vsel-item { background:var(--bg);border:1.5px solid var(--bdr);border-radius:12px;padding:.5rem .8rem;cursor:pointer;transition:.15s; }
+    .vsel-item.active { border-color:var(--or);background:rgba(255,107,53,.12); }
+    .vsel-item .vi-plate { font-size:.82rem;font-weight:800;letter-spacing:.06em;color:var(--txt); }
+    .vsel-item .vi-owner { font-size:.62rem;color:var(--sub);margin-top:.1rem; }
+    .vsel-ph { font-size:.8rem;color:var(--sub); }
+
+    /* ── TUTAR KARTI ── */
+    .amt-card { margin:.75rem 1.1rem .75rem;background:var(--c1);border:1px solid var(--bdr);border-radius:20px;padding:1.1rem 1.25rem; }
+    .amt-label { font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--sub);margin-bottom:.5rem; }
+    .amt-row { display:flex;align-items:center;gap:.5rem; }
+    .amt-sym { font-size:2rem;font-weight:800;color:var(--or); }
+    .amt-inp { flex:1;background:none;border:none;outline:none;font-size:2.5rem;font-weight:800;color:var(--txt);font-family:'Space Grotesk',sans-serif;width:100%; }
+    .amt-inp::placeholder { color:var(--bdr); }
+
+    /* ── KONUM CHİP ── */
+    .loc-chips { display:flex;flex-wrap:wrap;gap:.4rem; }
+    .loc-chip { background:var(--c2);border:1.5px solid var(--bdr);border-radius:20px;padding:.4rem .85rem;font-size:.78rem;font-weight:600;cursor:pointer;color:var(--sub);transition:.15s; }
+    .loc-chip.active { background:rgba(255,107,53,.12);border-color:var(--or);color:var(--or); }
+    .loc-chip-other { border-style:dashed; }
+
     .plate-wrap {
       margin: 1.1rem 1.1rem 0;
       background: #fff;
@@ -346,6 +381,12 @@
     }
     .empty-i { font-size: 2.2rem; margin-bottom: 0.6rem; filter: grayscale(1) opacity(.25); }
 
+    /* ── PERM CHIPS ── */
+    .perm-chip { display:inline-flex;align-items:center;gap:.38rem;padding:.38rem .85rem;border-radius:20px;font-size:.78rem;font-weight:700;cursor:default;border:1.5px solid var(--bdr);background:var(--c1);color:var(--sub);transition:all .15s;user-select:none; }
+    .perm-chip.on { background:rgba(255,107,53,.14);border-color:rgba(255,107,53,.55);color:var(--or); }
+    .perm-chip.off { opacity:.45;text-decoration:line-through; }
+    .perm-chip .pcb { display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:4px;border:1.5px solid currentColor;flex-shrink:0;font-size:.65rem; }
+
     /* ─────────────────────────────
        TOAST
     ───────────────────────────── */
@@ -361,109 +402,833 @@
     }
     #toast.show { transform: translateX(-50%) translateY(0); }
 
+    /* Bildirim Banner */
+    #notif-banner {
+      position: fixed; top: 0; left: 0; right: 0;
+      transform: translateY(-110%);
+      background: var(--c1); border-bottom: 1px solid var(--bdr);
+      padding: calc(.75rem + env(safe-area-inset-top)) 1rem .75rem;
+      z-index: 1000;
+      transition: transform .35s cubic-bezier(0.34,1.2,0.64,1);
+      box-shadow: 0 8px 32px rgba(0,0,0,.4);
+      display: flex; align-items: center; gap: .75rem; cursor: pointer;
+    }
+    #notif-banner.show { transform: translateY(0); }
+    #notif-banner .nb-ico { font-size: 1.4rem; flex-shrink:0; }
+    #notif-banner .nb-body { flex:1; min-width:0; }
+    #notif-banner .nb-title { font-size:.82rem; font-weight:800; color:var(--txt); }
+    #notif-banner .nb-sub { font-size:.72rem; color:var(--sub); margin-top:.1rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    #notif-banner .nb-close { color:var(--sub); font-size:1.1rem; flex-shrink:0; padding:.25rem; }
+
     .sp { width:16px; height:16px; border:2px solid rgba(255,255,255,.25); border-top-color:#fff; border-radius:50%; animation:spin .6s linear infinite; }
     @keyframes spin { to { transform:rotate(360deg); } }
 
     .gap { height: 1.5rem; }
+
+    /* ── HAMBURGER ── */
+    .hamburger {
+      width:38px;height:38px;border:none;background:var(--c2);
+      border-radius:11px;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;gap:5px;cursor:pointer;
+      border:1px solid var(--bdr);flex-shrink:0;
+    }
+    .hamburger span { display:block;width:18px;height:2px;background:var(--txt);border-radius:2px;transition:.2s; }
+
+    /* ── DRAWER ── */
+    .dr-overlay {
+      display:none;position:fixed;inset:0;z-index:100;
+      background:rgba(0,0,0,.55);backdrop-filter:blur(3px);
+    }
+    .dr-overlay.open { display:block; }
+    .drawer {
+      position:fixed;top:0;left:0;bottom:0;width:280px;z-index:101;
+      background:var(--c1);border-right:1px solid var(--bdr);
+      transform:translateX(-100%);transition:transform .3s cubic-bezier(.4,0,.2,1);
+      display:flex;flex-direction:column;overflow:hidden;
+    }
+    .drawer.open { transform:translateX(0); }
+    .dr-user {
+      padding:calc(env(safe-area-inset-top,0px) + 1.1rem) 1.25rem 1.1rem;
+      background:linear-gradient(135deg,rgba(255,107,53,.07),transparent);
+      border-bottom:1px solid var(--bdr);
+    }
+    .dr-av {
+      width:54px;height:54px;border-radius:50%;
+      background:linear-gradient(135deg,var(--or),var(--or2));
+      display:flex;align-items:center;justify-content:center;
+      font-size:1.35rem;overflow:hidden;margin-bottom:.7rem;
+      border:2px solid rgba(255,107,53,.3);
+    }
+    .dr-nm  { font-size:.97rem;font-weight:800; }
+    .dr-em  { font-size:.68rem;color:var(--sub);margin-top:.15rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+    .dr-rol {
+      display:inline-flex;align-items:center;gap:.3rem;
+      font-size:.63rem;font-weight:700;padding:.22rem .55rem;
+      border-radius:20px;margin-top:.4rem;
+      background:rgba(0,212,170,.1);color:var(--tl);
+      border:1px solid rgba(0,212,170,.2);
+    }
+    .dr-nav { flex:1;padding:.6rem;overflow-y:auto; }
+    .dr-sec { font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--sub);padding:.7rem .5rem .25rem; }
+    .dr-it {
+      display:flex;align-items:center;gap:.7rem;
+      padding:.78rem .9rem;border-radius:12px;cursor:pointer;
+      font-size:.87rem;font-weight:600;color:var(--sub);
+      transition:.15s;margin-bottom:.15rem;
+    }
+    .dr-it:hover { background:var(--c2);color:var(--txt); }
+    .dr-it.on { background:rgba(255,107,53,.12);color:var(--or); }
+    .dr-it .di { font-size:1.05rem;width:22px;text-align:center;flex-shrink:0; }
+    .dr-foot { padding:.9rem;border-top:1px solid var(--bdr); }
+    .btn-logout {
+      width:100%;padding:.75rem;border:1px solid rgba(239,68,68,.25);
+      border-radius:12px;background:rgba(239,68,68,.08);
+      color:#ef4444;font-weight:700;font-family:'Space Grotesk',sans-serif;
+      font-size:.85rem;cursor:pointer;display:flex;align-items:center;
+      justify-content:center;gap:.5rem;
+    }
+    .btn-logout:active { opacity:.7; }
+
+
+    /* ── PAGE TITLE ── */
+    .pg-title { font-size:.93rem;font-weight:800;letter-spacing:-.01em; }
+    .pg-sub   { font-size:.65rem;color:var(--sub);font-weight:500;margin-top:.05rem; }
+
+    /* ── VEHICLE STATS MINI CARD ── */
+    .vstat-bar {
+      display:none;margin:.75rem 1.1rem 0;
+      background:linear-gradient(135deg,rgba(255,107,53,.08),rgba(255,154,0,.04));
+      border:1px solid rgba(255,107,53,.18);border-radius:16px;
+      padding:.75rem 1rem;
+      flex-direction:row;gap:.5rem;align-items:center;
+    }
+    .vstat-bar.show { display:flex; }
+    .vstat-chip {
+      flex:1;text-align:center;
+      border-right:1px solid rgba(255,107,53,.15);
+    }
+    .vstat-chip:last-child { border-right:none; }
+    .vstat-val { font-size:.95rem;font-weight:800;color:var(--or); }
+    .vstat-lbl { font-size:.58rem;color:var(--sub);font-weight:600;text-transform:uppercase;letter-spacing:.07em;margin-top:.1rem; }
+
+    /* ── EXIT LOC ── */
+    .exit-loc-wrap {
+      display:none;margin-top:.6rem;
+    }
+    .exit-loc-wrap.show { display:block; }
+    .exit-toggle {
+      display:flex;align-items:center;gap:.4rem;
+      font-size:.72rem;font-weight:700;color:var(--sub);
+      cursor:pointer;padding:.3rem 0;user-select:none;
+    }
+    .exit-toggle .et-ico { font-size:.8rem; transition:.15s; }
+    .exit-toggle.open .et-ico { color:var(--or); }
+
+    /* ── AMOUNT CARD ENHANCED ── */
+    .amt-card { position:relative; }
+    .amt-badge {
+      position:absolute;top:.7rem;right:.9rem;
+      font-size:.62rem;font-weight:700;color:var(--sub);
+      background:var(--c2);border:1px solid var(--bdr);
+      border-radius:8px;padding:.2rem .5rem;
+    }
+
+    /* ══ GEÇİŞ EKLE REDESIGN ══ */
+
+    /* Stats Topbar */
+    .g-sbar {
+      display:flex;align-items:center;
+      margin:.85rem 1.1rem .5rem;
+      background:var(--c1);
+      border:1px solid var(--bdr);
+      border-radius:18px;padding:.8rem 1rem;
+      gap:.5rem;
+    }
+    .g-sbar-item { flex:1;text-align:center; }
+    .g-sbar-val { font-size:.92rem;font-weight:800;color:var(--or); }
+    .g-sbar-lbl { font-size:.56rem;color:var(--sub);font-weight:600;text-transform:uppercase;letter-spacing:.07em;margin-top:.1rem; }
+    .g-sbar-sep { width:1px;height:28px;background:var(--bdr);flex-shrink:0; }
+
+    /* Recent Passages Slider */
+    .g-slider {
+      overflow-x:auto;overflow-y:hidden;
+      display:flex;gap:.6rem;
+      padding:.25rem 1.1rem .8rem;
+      scroll-snap-type:x mandatory;
+      -webkit-overflow-scrolling:touch;
+      scrollbar-width:none;
+    }
+    .g-slider::-webkit-scrollbar { display:none; }
+    .s-card {
+      flex-shrink:0;width:168px;
+      border-radius:18px;padding:.9rem .95rem;
+      scroll-snap-align:start;cursor:pointer;
+      position:relative;overflow:hidden;
+      background:var(--c1);border:1px solid var(--bdr);
+      transition:transform .15s;
+    }
+    .s-card:active { transform:scale(.96); }
+    .s-card::after {
+      content:'';position:absolute;
+      top:-18px;right:-18px;width:64px;height:64px;
+      border-radius:50%;background:var(--or);opacity:.07;pointer-events:none;
+    }
+    .s-plate { font-size:.62rem;font-weight:700;letter-spacing:.08em;color:var(--sub);margin-bottom:.4rem; }
+    .s-amt { font-size:1.35rem;font-weight:900;color:var(--or);letter-spacing:-.02em;line-height:1; }
+    .s-loc { font-size:.7rem;font-weight:600;color:var(--txt);margin-top:.3rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+    .s-date { font-size:.59rem;color:var(--sub);margin-top:.18rem; }
+    .s-loading { display:flex;align-items:center;gap:.5rem;color:var(--sub);font-size:.8rem;padding:.5rem 0; }
+
+    /* Location chips — horizontal scroll */
+    .loc-chips {
+      display:flex;flex-wrap:nowrap;gap:.4rem;
+      overflow-x:auto;scrollbar-width:none;
+      -webkit-overflow-scrolling:touch;
+      padding-bottom:.25rem;
+    }
+    .loc-chips::-webkit-scrollbar { display:none; }
+    .loc-chip { flex-shrink:0; }
+
+    /* Date+Note 2-col grid */
+    .g-2col { display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.85rem; }
+
+    /* ══ TAKVİM SAYFASI ══ */
+    .cal-header { display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.1rem .5rem; }
+    .cal-month { font-size:1.05rem;font-weight:800;letter-spacing:-.02em; }
+    .cal-nav { width:36px;height:36px;border:none;background:var(--c1);border:1px solid var(--bdr);border-radius:10px;color:var(--txt);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s; }
+    .cal-nav:active { transform:scale(.93); }
+    .cal-grid-wrap { margin:0 1.1rem;background:var(--c1);border:1px solid var(--bdr);border-radius:20px;overflow:hidden; }
+    .cal-dow { display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid var(--bdr); }
+    .cal-dow span { text-align:center;font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--sub);padding:.6rem 0; }
+    .cal-days { display:grid;grid-template-columns:repeat(7,1fr);gap:0; }
+    .cal-day {
+      aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+      cursor:pointer;border-radius:10px;margin:2px;transition:.15s;position:relative;
+      font-size:.82rem;font-weight:600;
+    }
+    .cal-day:active { transform:scale(.9); }
+    .cal-day.empty { cursor:default; }
+    .cal-day.today { background:rgba(255,107,53,.15);color:var(--or);font-weight:800; }
+    .cal-day.today .cal-day-num { color:var(--or); }
+    .cal-day.selected { background:var(--or);color:#fff; }
+    .cal-day.selected .cal-day-num { color:#fff; }
+    .cal-day.selected .cal-dot { background:#fff; }
+    .cal-day.has-pass .cal-dot { display:block; }
+    .cal-day-num { font-size:.82rem;font-weight:700;line-height:1; }
+    .cal-dot { display:none;width:5px;height:5px;border-radius:50%;background:var(--or);margin-top:2px; }
+    .cal-day.has-pass:not(.selected) .cal-day-num { color:var(--txt); }
+    .cal-day-amt { font-size:.45rem;font-weight:800;color:var(--tl);margin-top:1px;line-height:1; }
+    .cal-day.selected .cal-day-amt { color:rgba(255,255,255,.85); }
+
+    .cal-detail { margin:.75rem 1.1rem 0;background:var(--c1);border:1px solid var(--bdr);border-radius:20px;overflow:hidden; }
+    .cal-detail-head { padding:.7rem 1.1rem;border-bottom:1px solid var(--bdr);font-size:.75rem;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.07em; }
+    .cal-month-stat { display:flex;gap:.5rem;margin:.6rem 1.1rem; }
+    .cal-stat-chip { flex:1;background:var(--c1);border:1px solid var(--bdr);border-radius:14px;padding:.6rem .5rem;text-align:center; }
+    .cal-stat-val { font-size:.88rem;font-weight:800;color:var(--or); }
+    .cal-stat-lbl { font-size:.56rem;color:var(--sub);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-top:.1rem; }
+
+    /* Özel gün / tatil indikatörleri */
+    .cal-day.is-holiday { background:rgba(239,68,68,.08); }
+    .cal-day.is-holiday .cal-day-num { color:#ef4444; }
+    .cal-day.is-special  { background:rgba(59,130,246,.08); }
+    .cal-day.is-special .cal-day-num { color:#3b82f6; }
+    .cal-day.selected.is-holiday,
+    .cal-day.selected.is-special { background:var(--or); }
+    .cal-day.selected.is-holiday .cal-day-num,
+    .cal-day.selected.is-special .cal-day-num { color:#fff; }
+    .cal-day-badges { display:flex;gap:2px;margin-top:2px;justify-content:center; }
+    .cal-badge { width:5px;height:5px;border-radius:50%; }
+    .cal-badge.pass  { background:var(--or); }
+    .cal-badge.hol   { background:#ef4444; }
+    .cal-badge.spec  { background:#3b82f6; }
+
+    /* Legend */
+    .cal-legend { display:flex;gap:.85rem;padding:.5rem 1.1rem .3rem;flex-wrap:wrap; }
+    .cal-leg-item { display:flex;align-items:center;gap:.3rem;font-size:.62rem;font-weight:600;color:var(--sub); }
+    .cal-leg-dot { width:8px;height:8px;border-radius:50%;flex-shrink:0; }
+
+    /* Özel gün ekleme butonu */
+    .cal-add-btn {
+      display:flex;align-items:center;gap:.5rem;
+      margin:.5rem 1.1rem 0;
+      padding:.7rem 1rem;
+      background:var(--c1);border:1.5px dashed var(--bdr);
+      border-radius:14px;cursor:pointer;
+      font-size:.8rem;font-weight:700;color:var(--sub);
+      transition:.15s;
+    }
+    .cal-add-btn:active { opacity:.7; }
+
+    /* Özel gün modal */
+    #m-special { display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);align-items:flex-end;justify-content:center;padding:0; }
+    #m-special.open { display:flex; }
+    .m-special-box {
+      background:var(--c1);border:1px solid var(--bdr);
+      border-radius:24px 24px 0 0;padding:1.5rem 1.25rem;
+      width:100%;max-width:480px;
+      animation:slideup .25s ease both;
+    }
+    @keyframes slideup { from { transform:translateY(100%); } to { transform:translateY(0); } }
+    .m-spec-head { display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem; }
+    .m-spec-title { font-size:1rem;font-weight:800; }
+    .m-spec-close { background:none;border:none;color:var(--sub);font-size:1.2rem;cursor:pointer; }
+    .spec-list-item { display:flex;align-items:center;gap:.65rem;padding:.6rem 0;border-bottom:1px solid var(--bdr); }
+    .spec-list-item:last-child { border-bottom:none; }
+    .spec-dot { width:10px;height:10px;border-radius:50%;background:#3b82f6;flex-shrink:0; }
+    .spec-body { flex:1;min-width:0; }
+    .spec-name { font-size:.85rem;font-weight:700; }
+    .spec-date { font-size:.65rem;color:var(--sub);margin-top:.1rem; }
+    .spec-del { background:none;border:none;color:var(--sub);font-size:1rem;cursor:pointer;padding:.2rem;transition:.15s; }
+    .spec-del:hover { color:#ef4444; }
+
+    /* ══ ANALİZ SAYFASI ══ */
+    .an-sec { padding:.85rem 1.1rem 0; }
+    .an-card { background:var(--c1);border:1px solid var(--bdr);border-radius:20px;overflow:hidden;margin-bottom:.85rem; }
+    .an-head { padding:.75rem 1.15rem;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:.5rem;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--sub); }
+    .an-body { padding:1rem 1.15rem; }
+
+    /* Bar chart */
+    .bar-chart { display:flex;align-items:flex-end;gap:.45rem;height:110px;padding-bottom:0; }
+    .bar-col { flex:1;display:flex;flex-direction:column;align-items:center;gap:.3rem;height:100%; }
+    .bar-wrap { flex:1;display:flex;align-items:flex-end;width:100%; }
+    .bar { width:100%;border-radius:6px 6px 0 0;min-height:4px;transition:height .4s ease;background:linear-gradient(180deg,var(--or),var(--or2));opacity:.85; }
+    .bar.active { opacity:1;box-shadow:0 0 8px rgba(255,107,53,.4); }
+    .bar-lbl { font-size:.55rem;font-weight:700;color:var(--sub);text-align:center;white-space:nowrap; }
+    .bar-val { font-size:.6rem;font-weight:800;color:var(--or);text-align:center;white-space:nowrap; }
+
+    /* Sıralama listesi */
+    .rank-row { display:flex;align-items:center;gap:.65rem;padding:.55rem 0;border-bottom:1px solid var(--bdr); }
+    .rank-row:last-child { border-bottom:none; }
+    .rank-num { width:22px;height:22px;border-radius:7px;background:var(--c2);display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:800;color:var(--sub);flex-shrink:0; }
+    .rank-num.gold { background:rgba(245,158,11,.15);color:#f59e0b; }
+    .rank-num.silver { background:rgba(107,114,128,.15);color:#9ca3af; }
+    .rank-num.bronze { background:rgba(180,83,9,.15);color:#b45309; }
+    .rank-body { flex:1;min-width:0; }
+    .rank-name { font-size:.83rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+    .rank-bar-wrap { height:4px;background:var(--c2);border-radius:4px;margin-top:.3rem;overflow:hidden; }
+    .rank-bar { height:100%;border-radius:4px;background:linear-gradient(90deg,var(--tl),var(--tl2));transition:width .5s ease; }
+    .rank-amt { font-size:.82rem;font-weight:800;color:var(--or);white-space:nowrap;flex-shrink:0; }
+
+    /* Araç karşılaştırma */
+    .vcomp-row { display:flex;align-items:center;gap:.65rem;padding:.6rem 0;border-bottom:1px solid var(--bdr); }
+    .vcomp-row:last-child { border-bottom:none; }
+    .vcomp-ico { width:38px;height:38px;border-radius:11px;background:rgba(255,107,53,.1);border:1px solid rgba(255,107,53,.15);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0; }
+    .vcomp-body { flex:1;min-width:0; }
+    .vcomp-plate { font-size:.9rem;font-weight:800;letter-spacing:.04em; }
+    .vcomp-meta { font-size:.65rem;color:var(--sub);margin-top:.15rem; }
+    .vcomp-bar-wrap { height:5px;background:var(--c2);border-radius:4px;margin-top:.35rem;overflow:hidden; }
+    .vcomp-bar { height:100%;border-radius:4px;background:linear-gradient(90deg,var(--or),var(--or2));transition:width .5s ease; }
+    .vcomp-amt { font-size:.88rem;font-weight:800;color:var(--or);white-space:nowrap;flex-shrink:0; }
+
+    /* Haftalık trend chart */
+    .week-chart { display:flex;align-items:flex-end;gap:.35rem;height:90px; }
+    .week-col { flex:1;display:flex;flex-direction:column;align-items:center;gap:.25rem;height:100%; }
+    .week-bars { flex:1;display:flex;align-items:flex-end;gap:2px;width:100%; }
+    .week-bar { flex:1;border-radius:4px 4px 0 0;min-height:3px;transition:height .4s ease; }
+    .week-lbl { font-size:.55rem;font-weight:700;color:var(--sub);white-space:nowrap; }
+    .week-legend-item { display:flex;align-items:center;gap:.3rem;font-size:.65rem;font-weight:600;color:var(--sub); }
+    .week-legend-dot { width:8px;height:8px;border-radius:3px;flex-shrink:0; }
+
+    /* Saatlik yoğunluk chart */
+    .hour-chart { display:flex;align-items:flex-end;gap:2px;height:70px;overflow:hidden; }
+    .hour-col { flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;height:100%;cursor:default; }
+    .hour-bar { width:100%;border-radius:3px 3px 0 0;min-height:2px;transition:height .4s ease;background:linear-gradient(180deg,var(--tl),var(--tl2));opacity:.7; }
+    .hour-bar.peak { opacity:1;background:linear-gradient(180deg,var(--or),var(--or2));box-shadow:0 0 6px rgba(255,107,53,.4); }
+    .hour-lbl { font-size:.42rem;font-weight:700;color:var(--sub); }
+
+    /* Özet chiplar */
+    .an-summary { display:flex;gap:.5rem;margin-bottom:.85rem; }
+    .an-chip { flex:1;background:var(--c1);border:1px solid var(--bdr);border-radius:16px;padding:.75rem .65rem;text-align:center; }
+    .an-chip-val { font-size:.95rem;font-weight:800;color:var(--or); }
+    .an-chip-lbl { font-size:.58rem;color:var(--sub);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-top:.15rem; }
+    .g-2col .card { margin:0; }
+    .g-2col .card-h { padding:.6rem .9rem;font-size:.63rem; }
+    .g-2col .card-b { padding:.6rem .9rem; }
+
+    /* ── YAKIT STAT KARTLARI ── */
+    .yk-stats { display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin:.75rem 1.1rem .3rem; }
+    .yk-stat { background:var(--c1);border:1px solid var(--bdr);border-radius:18px;padding:.85rem .9rem;position:relative;overflow:hidden; }
+    .yk-stat::before { content:'';position:absolute;top:0;left:0;right:0;height:1.5px;border-radius:2px; }
+    .yk-stat.s-or::before { background:linear-gradient(90deg,transparent,var(--or),transparent); }
+    .yk-stat.s-tl::before { background:linear-gradient(90deg,transparent,var(--tl),transparent); }
+    .yk-stat.s-bl::before { background:linear-gradient(90deg,transparent,var(--bl,#3b82f6),transparent); }
+    .yk-stat.s-dim::before { background:linear-gradient(90deg,transparent,var(--sub),transparent); }
+    .yk-stat-ico { font-size:1.25rem;margin-bottom:.3rem; }
+    .yk-stat-val { font-size:1.1rem;font-weight:900;letter-spacing:-.02em;line-height:1; }
+    .yk-stat-val.or { color:var(--or); }
+    .yk-stat-val.tl { color:var(--tl); }
+    .yk-stat-val.bl { color:#3b82f6; }
+    .yk-stat-lbl { font-size:.56rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--sub);margin-top:.25rem; }
+
+    /* ── HIZLI GEÇİŞ ── */
+    .quick-bar {
+      margin:.6rem 1.1rem 0;
+      background:linear-gradient(135deg,rgba(0,212,170,.08),rgba(59,130,246,.04));
+      border:1px solid rgba(0,212,170,.2);border-radius:16px;
+      padding:.75rem 1rem;
+      display:flex;align-items:center;justify-content:space-between;gap:.75rem;
+    }
+    .quick-info { flex:1;min-width:0; }
+    .quick-lbl { font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--tl);margin-bottom:.2rem; }
+    .quick-plate { font-size:.97rem;font-weight:800;letter-spacing:.04em; }
+    .quick-sub { font-size:.68rem;color:var(--sub);margin-top:.1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+    .quick-btn { background:var(--tl);color:#003d2e;border:none;border-radius:11px;padding:.5rem .95rem;font-size:.8rem;font-weight:800;font-family:'Space Grotesk',sans-serif;cursor:pointer;flex-shrink:0;transition:.15s; }
+    .quick-btn:active { transform:scale(.95); }
+
+    /* ── KARŞILAŞTIRMA KARTI ── */
+    .cmp-card { background:var(--c1);border:1px solid var(--bdr);border-radius:20px;overflow:hidden;margin-bottom:.85rem; }
+    .cmp-head { padding:.75rem 1.15rem;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between; }
+    .cmp-title { font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--sub);display:flex;align-items:center;gap:.4rem; }
+    .cmp-row { display:flex;align-items:center;padding:.7rem 1.15rem;border-bottom:1px solid var(--bdr); }
+    .cmp-row:last-child { border-bottom:none; }
+    .cmp-lbl { flex:1;font-size:.83rem;font-weight:600; }
+    .cmp-prev { font-size:.78rem;color:var(--sub);min-width:70px;text-align:right; }
+    .cmp-cur  { font-size:.88rem;font-weight:800;min-width:85px;text-align:right; }
+    .cmp-chg  { font-size:.75rem;font-weight:700;min-width:52px;text-align:right; }
+    .chg-up   { color:#ef4444; }
+    .chg-dn   { color:#22c55e; }
+
+    /* ── BADGE ── */
+    .dr-badge { display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;border-radius:9px;background:var(--or);color:#fff;font-size:.58rem;font-weight:800;padding:0 .3rem;margin-left:auto;flex-shrink:0;animation:pulse-badge .6s ease; }
+    @keyframes pulse-badge { 0%{transform:scale(0);opacity:0} 70%{transform:scale(1.15)} 100%{transform:scale(1);opacity:1} }
+
+    /* ── GLOBAL SEARCH ── */
+    .hdr-srch-btn { width:36px;height:36px;border:1px solid var(--bdr);background:var(--c2);border-radius:11px;color:var(--txt);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.15s; }
+    .hdr-srch-btn:active { transform:scale(.93); }
+    #gsearch-overlay { display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);flex-direction:column; }
+    #gsearch-overlay.open { display:flex; }
+    .gs-bar { display:flex;align-items:center;gap:.75rem;padding:calc(env(safe-area-inset-top,0px) + .85rem) 1.1rem .85rem;background:var(--c1);border-bottom:1px solid var(--bdr); }
+    .gs-input { flex:1;background:var(--c2);border:1.5px solid var(--bdr);border-radius:14px;color:var(--txt);padding:.7rem 1rem;font-size:.95rem;font-family:'Space Grotesk',sans-serif;outline:none;transition:border-color .2s; }
+    .gs-input:focus { border-color:rgba(255,107,53,.5); }
+    .gs-close { background:none;border:none;color:var(--sub);font-size:1.3rem;cursor:pointer;padding:.2rem;flex-shrink:0; }
+    .gs-results { flex:1;overflow-y:auto;padding:.75rem 1.1rem 2rem; }
+    .gs-group-lbl { font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--sub);margin:.85rem 0 .4rem; }
+    .gs-group-lbl:first-child { margin-top:0; }
+    .gs-item { background:var(--c1);border:1px solid var(--bdr);border-radius:14px;padding:.75rem 1rem;margin-bottom:.4rem;display:flex;align-items:center;gap:.75rem;cursor:pointer;transition:.15s; }
+    .gs-item:active { transform:scale(.98);opacity:.85; }
+    .gs-ico { width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0; }
+    .gs-ico.pass { background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.18); }
+    .gs-ico.veh  { background:rgba(255,107,53,.12);border:1px solid rgba(255,107,53,.18); }
+    .gs-ico.fuel { background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.18); }
+    .gs-body { flex:1;min-width:0; }
+    .gs-name { font-size:.87rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+    .gs-meta { font-size:.65rem;color:var(--sub);margin-top:.12rem; }
+    .gs-tag  { font-size:.82rem;font-weight:800;color:var(--or);white-space:nowrap;flex-shrink:0; }
+    .gs-empty { text-align:center;padding:3rem 1rem;color:var(--sub);font-size:.85rem; }
+    .gs-empty-ico { font-size:2rem;margin-bottom:.5rem;opacity:.3; }
+
+    /* ── FAB ── */
+    .fab { position:fixed;bottom:1.5rem;right:1.25rem;z-index:90;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--or),var(--or2));border:none;color:#fff;font-size:1.6rem;cursor:pointer;box-shadow:0 6px 28px rgba(255,107,53,.5);display:flex;align-items:center;justify-content:center;transition:transform .2s,box-shadow .2s,opacity .2s; }
+    .fab:active { transform:scale(.9); }
+    .fab.hide { opacity:0;pointer-events:none;transform:scale(.8); }
+
+    /* ── QUICK PASS SHEET ── */
+    #qp-sheet { display:none;position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);align-items:flex-end;justify-content:center; }
+    #qp-sheet.open { display:flex; }
+    .qp-box { background:var(--c1);border:1px solid var(--bdr);border-radius:24px 24px 0 0;padding:1.35rem 1.25rem 2rem;width:100%;max-width:480px;animation:slideup .25s ease both;max-height:88vh;overflow-y:auto; }
+    .qp-head { display:flex;justify-content:space-between;align-items:center;margin-bottom:1.15rem; }
+    .qp-title { font-size:1.05rem;font-weight:800; }
+    .qp-close { background:var(--c2);border:1px solid var(--bdr);border-radius:50%;width:30px;height:30px;color:var(--sub);font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0; }
+    .qp-lbl { font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--sub);margin-bottom:.38rem; }
+    .qp-chips { display:flex;flex-wrap:wrap;gap:.35rem; }
+    .qp-chip { background:var(--c2);border:1.5px solid var(--bdr);border-radius:20px;padding:.35rem .75rem;font-size:.75rem;font-weight:600;cursor:pointer;color:var(--sub);transition:.15s;flex-shrink:0; }
+    .qp-chip.active { background:rgba(255,107,53,.12);border-color:var(--or);color:var(--or); }
+
+    /* ── YAKIT ARAÇ ÖZET ── */
+    .yk-veh-row { display:flex;align-items:center;gap:.7rem;padding:.6rem 0;border-bottom:1px solid var(--bdr); }
+    .yk-veh-row:last-child { border-bottom:none; }
+    .yk-veh-plate { display:flex;align-items:stretch;border-radius:5px;overflow:hidden;border:1.5px solid #3a4ab0;box-shadow:0 1px 4px rgba(0,0,0,.25);height:22px;flex-shrink:0; }
+    .yk-veh-plate .eu { background:#1a2fb0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 3px;gap:0; }
+    .yk-veh-plate .eu span:first-child { font-size:.6rem;line-height:1; }
+    .yk-veh-plate .eu span:last-child  { font-size:.4rem;font-weight:800;color:#fff;letter-spacing:.04em;line-height:1; }
+    .yk-veh-plate .num { background:#fff;color:#111;font-weight:800;font-size:.72rem;letter-spacing:.07em;padding:0 .38rem;display:flex;align-items:center; }
+    .yk-veh-body { flex:1;min-width:0; }
+    .yk-veh-bar-wrap { height:3px;background:var(--c2);border-radius:3px;margin-top:.3rem;overflow:hidden; }
+    .yk-veh-bar { height:100%;border-radius:3px;background:linear-gradient(90deg,var(--tl),var(--tl2));transition:width .5s ease; }
+    .yk-veh-meta { font-size:.62rem;color:var(--sub); }
+    .yk-veh-amt { font-size:.85rem;font-weight:800;color:var(--or);white-space:nowrap;flex-shrink:0; }
+
+    /* ── DASHBOARD HIZLI FİLTRE ── */
+    .ds-flt-bar { display:flex;gap:.35rem;margin-bottom:.85rem; }
+    .ds-flt-btn {
+      flex:1;padding:.45rem .5rem;border:1.5px solid var(--bdr);
+      border-radius:10px;background:var(--c1);color:var(--sub);
+      font-size:.72rem;font-weight:700;font-family:'Space Grotesk',sans-serif;
+      cursor:pointer;transition:.15s;text-align:center;
+    }
+    .ds-flt-btn.on { border-color:var(--or);background:rgba(255,107,53,.12);color:var(--or); }
+
+    /* ── DÜŞÜK BAKİYE UYARI KARTI ── */
+    .ds-lowbal {
+      display:none;
+      background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.2);
+      border-radius:16px;padding:.75rem 1rem;margin-bottom:.85rem;
+    }
+    .ds-lowbal.show { display:block; }
+    .ds-lowbal-head { font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:#ef4444;margin-bottom:.5rem; }
+    .ds-lowbal-row { display:flex;align-items:center;justify-content:space-between;padding:.3rem 0;border-bottom:1px solid rgba(239,68,68,.12); }
+    .ds-lowbal-row:last-child { border-bottom:none; }
+    .ds-lowbal-plate { font-size:.8rem;font-weight:800;letter-spacing:.04em; }
+    .ds-lowbal-val { font-size:.8rem;font-weight:800;color:#ef4444; }
+
+    /* ── ARAÇ BAŞI ORTALAMA ── */
+    .ds-avg-row { display:flex;align-items:center;justify-content:space-between;padding:.45rem 0;border-bottom:1px solid var(--bdr); }
+    .ds-avg-row:last-child { border-bottom:none; }
+    .ds-avg-lbl { font-size:.82rem;font-weight:600;color:var(--txt); }
+    .ds-avg-val { font-size:.88rem;font-weight:800;color:var(--or); }
   </style>
 </head>
 <body>
 
+<!-- ══ SPLASH ══ -->
+<div id="mob-splash" style="position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#060912 0%,#0e1525 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .5s ease">
+  <div style="position:relative;width:300px;height:80px;margin-bottom:2rem">
+    <div style="position:absolute;bottom:12px;left:0;right:0;height:3px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden">
+      <div style="height:100%;background:repeating-linear-gradient(90deg,rgba(255,107,53,.5) 0,rgba(255,107,53,.5) 24px,transparent 24px,transparent 48px);width:200%;animation:mobRoadMove .6s linear infinite"></div>
+    </div>
+    <div id="mob-splash-truck" style="position:absolute;bottom:14px;font-size:3rem;animation:mobTruckDrive 3s cubic-bezier(.4,0,.2,1) forwards">🚛</div>
+  </div>
+  <div style="font-size:1.1rem;font-weight:800;color:#f0f4ff;letter-spacing:-.02em">HGS Filo</div>
+  <div style="font-size:.72rem;color:#5c6b8a;margin-top:.3rem;font-weight:500">Yükleniyor...</div>
+</div>
+
+<!-- ══ SAYFA GEÇİŞ TIR ══ -->
+<div id="mob-truck-bar" style="position:fixed;inset:0;z-index:8888;background:rgba(6,9,18,.92);backdrop-filter:blur(4px);display:none;flex-direction:column;align-items:center;justify-content:center;transition:opacity .3s">
+  <div style="position:relative;width:300px;height:70px">
+    <div style="position:absolute;bottom:6px;left:0;right:0;height:3px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden">
+      <div style="height:100%;background:repeating-linear-gradient(90deg,rgba(255,107,53,.5) 0,rgba(255,107,53,.5) 24px,transparent 24px,transparent 48px);width:200%;animation:mobRoadMove .6s linear infinite"></div>
+    </div>
+    <div id="mob-truck-ico" style="position:absolute;bottom:8px;font-size:2.8rem">🚛</div>
+  </div>
+</div>
+
+<style>
+@keyframes mobTruckDrive {
+  0%   { left:calc(100% + 80px); opacity:0; }
+  10%  { opacity:1; }
+  40%  { left:calc(50% - 24px); }
+  70%  { left:calc(50% - 24px); }
+  100% { left:-100px; opacity:0; }
+}
+@keyframes mobRoadMove {
+  0%   { transform:translateX(0); }
+  100% { transform:translateX(-48px); }
+}
+@keyframes mobTruckPass {
+  0%   { left:calc(100% + 80px); opacity:0; }
+  15%  { opacity:1; }
+  45%  { left:calc(50% - 24px); }
+  70%  { left:calc(50% - 24px); }
+  100% { left:-100px; opacity:0; }
+}
+</style>
+
 <!-- HEADER -->
 <header>
-  <div class="logo">
-    <div class="logo-sq">🛣️</div>
-    <div class="logo-text">
-      <div class="n">HGS Filo</div>
-      <div class="s">Geçiş Takip Sistemi</div>
-    </div>
+  <button class="hamburger" onclick="openDrawer()" aria-label="Menü">
+    <span></span><span></span><span></span>
+  </button>
+  <div style="flex:1;text-align:center">
+    <div class="pg-title" id="page-title">Dashboard</div>
+    <div class="pg-sub"  id="page-sub">Genel özet ve istatistikler</div>
   </div>
-  <div style="display:flex;align-items:center;gap:0.5rem">
-    <div class="api-badge">
-      <div class="adot" id="adot"></div>
-      <span id="albl">Bağlanıyor</span>
-    </div>
-    <div class="api-badge" style="cursor:pointer;gap:0.4rem" onclick="logout()" title="Çıkış">
-      <span id="uname" style="color:var(--txt)">—</span>
-      <span>✕</span>
-    </div>
+  <button class="hdr-srch-btn" onclick="openGlobalSearch()" aria-label="Ara">🔍</button>
+  <div class="api-badge" style="margin-left:.35rem">
+    <div class="adot" id="adot"></div>
+    <span id="albl">Bağlanıyor</span>
   </div>
+  <span id="uname" style="display:none">—</span>
 </header>
 
-<!-- TAB BAR -->
-<div class="tabbar">
-  <div class="tb on" id="tb-gecis" onclick="go('gecis',this)">
-    <span class="ico">➕</span>Geçiş
+<!-- DRAWER OVERLAY -->
+<div class="dr-overlay" id="dr-overlay" onclick="closeDrawer()"></div>
+
+<!-- DRAWER -->
+<div class="drawer" id="drawer">
+  <!-- Kullanıcı Kartı -->
+  <div class="dr-user">
+    <div class="dr-av" id="dr-av">👤</div>
+    <div class="dr-nm" id="dr-nm">—</div>
+    <div class="dr-em" id="dr-em">—</div>
+    <div class="dr-rol" id="dr-rol">👤 Kullanıcı</div>
   </div>
-  <div class="tb" id="tb-filo" onclick="go('filo',this)">
-    <span class="ico">📊</span>Filo
+  <!-- Navigasyon -->
+  <div class="dr-nav">
+    <div class="dr-sec">Ana Menü</div>
+    <div class="dr-it on" id="dr-dash" onclick="goD('dash','Dashboard','Genel özet ve istatistikler');loadDash()" style="display:flex;align-items:center">
+      <span class="di">🏠</span> <span style="flex:1">Dashboard</span>
+    </div>
+    <div class="dr-it" id="dr-gecis" onclick="goD('gecis','Geçiş Ekle','Yeni geçiş kaydı');clearBadge('gecis')" style="display:flex;align-items:center">
+      <span class="di">➕</span> <span style="flex:1">Geçiş Ekle</span><span id="badge-gecis" class="dr-badge" style="display:none"></span>
+    </div>
+    <div class="dr-it" id="dr-filo" onclick="goD('filo','Filo Özeti','Araç ve harcama istatistikleri')" style="display:flex;align-items:center">
+      <span class="di">📊</span> <span style="flex:1">Filo Özeti</span>
+    </div>
+    <div class="dr-it" id="dr-arac" onclick="goD('arac','Araç Ekle','Yeni araç kaydı')" style="display:flex;align-items:center">
+      <span class="di">🚗</span> <span style="flex:1">Araç Ekle</span>
+    </div>
+    <div class="dr-it" id="dr-takvim" onclick="goD('takvim','Takvim','Aylık geçiş görünümü');loadTakvim()" style="display:flex;align-items:center">
+      <span class="di">📅</span> <span style="flex:1">Takvim</span>
+    </div>
+    <div class="dr-it" id="dr-analiz" onclick="goD('analiz','Analiz','Harcama ve güzergah istatistikleri');loadAnaliz()" style="display:flex;align-items:center">
+      <span class="di">📈</span> <span style="flex:1">Analiz</span>
+    </div>
+    <div class="dr-it" id="dr-yakitlar" onclick="goD('yakitlar','Yakıtlar','Yakıt tüketim kayıtları');loadMobileYakitlar()" style="display:flex;align-items:center">
+      <span class="di">⛽</span> <span style="flex:1">Yakıtlar</span><span id="badge-yakitlar" class="dr-badge" style="display:none"></span>
+    </div>
+    <div class="dr-sec">Hesap</div>
+    <div class="dr-it" id="dr-ayarlar" onclick="goD('ayarlar','Ayarlar','Hesap ve uygulama ayarları');loadAyarlar()">
+      <span class="di">⚙️</span> Ayarlar
+    </div>
+    <div class="dr-it" onclick="openProfile()">
+      <span class="di">👤</span> Profilim
+    </div>
   </div>
-  <div class="tb" id="tb-arac" onclick="go('arac',this)">
-    <span class="ico">⚙️</span>Araç
+  <!-- Çıkış -->
+  <div class="dr-foot">
+    <button class="btn-logout" onclick="logout()">🚪 Çıkış Yap</button>
   </div>
 </div>
 
 <!-- BODY -->
 <div class="body">
 
-  <!-- ════ GEÇİŞ ════ -->
-  <div id="pg-gecis" class="pg on">
+  <!-- ════ DASHBOARD ════ -->
+  <div id="pg-dash" class="pg on">
+    <div style="padding:.75rem 1.1rem 0">
 
-    <div class="plate-wrap">
-      <div class="plate-eu">
-        <div class="es">★</div>
-        <div class="et">TR</div>
+      <!-- Hoşgeldin -->
+      <div id="dash-greet" style="font-size:.78rem;color:var(--sub);margin-bottom:.85rem"></div>
+
+      <!-- Hızlı Filtre -->
+      <div class="ds-flt-bar">
+        <button class="ds-flt-btn on" onclick="setDashFilter('all',this)">Tümü</button>
+        <button class="ds-flt-btn" onclick="setDashFilter('month',this)">Bu Ay</button>
+        <button class="ds-flt-btn" onclick="setDashFilter('week',this)">Bu Hafta</button>
+        <button class="ds-flt-btn" onclick="setDashFilter('today',this)">Bugün</button>
       </div>
+
+      <!-- 4 Stat kartı -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.5rem">
+        <div class="an-chip">
+          <div class="an-chip-val" id="ds-hgs" style="color:var(--or)">—</div>
+          <div class="an-chip-lbl">HGS Harcama</div>
+        </div>
+        <div class="an-chip">
+          <div class="an-chip-val" id="ds-yakit" style="color:var(--tl)">—</div>
+          <div class="an-chip-lbl">Yakıt Harcama</div>
+        </div>
+        <div class="an-chip">
+          <div class="an-chip-val" id="ds-maliyet" style="color:#8b5cf6">—</div>
+          <div class="an-chip-lbl">Toplam Maliyet</div>
+        </div>
+        <div class="an-chip">
+          <div class="an-chip-val" id="ds-gecis" style="color:var(--sub)">—</div>
+          <div class="an-chip-lbl">Toplam Geçiş</div>
+        </div>
+      </div>
+
+      <!-- Aktif/Pasif araç + Araç başı ortalama -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;margin-bottom:.85rem">
+        <div class="an-chip">
+          <div class="an-chip-val" id="ds-aktif" style="color:var(--tl)">—</div>
+          <div class="an-chip-lbl">Aktif Araç</div>
+        </div>
+        <div class="an-chip">
+          <div class="an-chip-val" id="ds-pasif" style="color:#ef4444">—</div>
+          <div class="an-chip-lbl">Pasif Araç</div>
+        </div>
+        <div class="an-chip">
+          <div class="an-chip-val" id="ds-avg-hgs" style="color:var(--or)">—</div>
+          <div class="an-chip-lbl">Araç Başı HGS</div>
+        </div>
+      </div>
+
+      <!-- Düşük Bakiyeli Araçlar Uyarısı -->
+      <div class="ds-lowbal" id="ds-lowbal">
+        <div class="ds-lowbal-head">⚠️ Düşük Bakiyeli Araçlar</div>
+        <div id="ds-lowbal-list"></div>
+      </div>
+
+      <!-- Bu Ay vs Geçen Ay -->
+      <div class="cmp-card">
+        <div class="cmp-head">
+          <div class="cmp-title">📅 Bu Ay vs Geçen Ay</div>
+          <span id="ds-cmp-lbl" style="font-size:.65rem;color:var(--sub);font-weight:600"></span>
+        </div>
+        <div id="ds-cmp-body">
+          <div class="empty" style="padding:1rem">Yükleniyor…</div>
+        </div>
+      </div>
+
+      <!-- Aylık Harcama Grafiği -->
+      <div class="an-card">
+        <div class="an-head"><span>📊</span> Aylık Harcama (Son 6 Ay)</div>
+        <div class="an-body">
+          <div class="bar-chart" id="ds-bars">
+            <div class="empty" style="width:100%"><div class="empty-i">📊</div>Yükleniyor…</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- En Pahalı Araçlar -->
+      <div class="an-card">
+        <div class="an-head"><span>🚗</span> En Çok Harcayan Araçlar</div>
+        <div class="an-body" id="ds-top-vehs">
+          <div class="empty"><div class="empty-i">🚗</div>Yükleniyor…</div>
+        </div>
+      </div>
+
+      <!-- Araç Başı Ortalama Detay -->
+      <div class="an-card">
+        <div class="an-head"><span>📉</span> Araç Başı Ortalama</div>
+        <div class="an-body" id="ds-avg-body">
+          <div class="empty"><div class="empty-i">📉</div>Yükleniyor…</div>
+        </div>
+      </div>
+
+      <!-- Son Geçişler -->
+      <div class="an-card">
+        <div class="an-head"><span>🛣️</span> Son Geçişler</div>
+        <div class="an-body" id="ds-recent">
+          <div class="empty"><div class="empty-i">🛣️</div>Yükleniyor…</div>
+        </div>
+      </div>
+
+    </div>
+    <div class="gap"></div>
+  </div>
+
+  <!-- ════ GEÇİŞ ════ -->
+  <div id="pg-gecis" class="pg">
+
+    <!-- STATS TOPBAR -->
+    <div class="g-sbar">
+      <div class="g-sbar-item">
+        <div class="g-sbar-val" id="gs-today">₺0</div>
+        <div class="g-sbar-lbl">Bugün</div>
+      </div>
+      <div class="g-sbar-sep"></div>
+      <div class="g-sbar-item">
+        <div class="g-sbar-val" id="gs-month">₺0</div>
+        <div class="g-sbar-lbl">Bu Ay</div>
+      </div>
+      <div class="g-sbar-sep"></div>
+      <div class="g-sbar-item">
+        <div class="g-sbar-val" id="gs-cnt">0</div>
+        <div class="g-sbar-lbl">Geçiş</div>
+      </div>
+    </div>
+
+    <!-- HIZLI GEÇİŞ -->
+    <div id="quick-bar" class="quick-bar" style="display:none">
+      <div class="quick-info">
+        <div class="quick-lbl">⚡ Hızlı Geçiş</div>
+        <div class="quick-plate" id="quick-plate">—</div>
+        <div class="quick-sub" id="quick-sub">Son kullanılan araç ve konum</div>
+      </div>
+      <button class="quick-btn" onclick="quickSave()">Kaydet</button>
+    </div>
+
+    <!-- SON GEÇİŞLER SLİDER -->
+    <div class="dlbl">Son Geçişler</div>
+    <div class="g-slider" id="recent-slider">
+      <div class="s-loading"><div class="sp"></div></div>
+    </div>
+
+    <!-- YENİ GEÇİŞ BÖLÜMÜ -->
+    <div class="dlbl">Yeni Geçiş</div>
+
+    <!-- ARAÇ SEÇİCİ -->
+    <div class="vsel-wrap">
+      <div class="vsel-label">Araç Seç</div>
+      <div class="vsel-toggle" onclick="toggleVsel()">
+        <div class="vsel-toggle-lbl">
+          <span id="vsel-ico">🚗</span>
+          <span id="vsel-lbl">Araç Seçin</span>
+        </div>
+        <button class="vsel-arrow-btn" id="vsel-arr">▼</button>
+      </div>
+      <div class="vsel-panel" id="vsel-panel">
+        <input id="vsel-search" type="text" placeholder="🔍 Plaka ara..."
+          oninput="filterVsel(this.value)" onclick="event.stopPropagation()"
+          style="width:100%;background:var(--c2);border:1.5px solid var(--bdr);border-radius:10px;color:var(--txt);padding:.5rem .85rem;font-size:.83rem;font-family:'Space Grotesk',sans-serif;outline:none;margin-bottom:.5rem;box-sizing:border-box">
+        <div class="vsel-grid" id="vsel-list"></div>
+      </div>
+    </div>
+
+    <!-- ARAÇ STAT MINI BAR -->
+    <div class="vstat-bar" id="vstat-bar">
+      <div class="vstat-chip"><div class="vstat-val" id="vs-total">—</div><div class="vstat-lbl">Toplam</div></div>
+      <div class="vstat-chip"><div class="vstat-val" id="vs-month">—</div><div class="vstat-lbl">Bu Ay</div></div>
+      <div class="vstat-chip"><div class="vstat-val" id="vs-count">—</div><div class="vstat-lbl">Geçiş</div></div>
+    </div>
+
+    <!-- PLAKA DISPLAY -->
+    <div class="plate-wrap">
+      <div class="plate-eu"><div class="es">★</div><div class="et">TR</div></div>
       <div class="plate-num-wrap">
         <div class="plate-num ph" id="pd">PLAKA GİRİN</div>
       </div>
     </div>
 
     <div class="sec">
-      <div class="card">
-        <div class="card-h">
-          <div class="pip pip-or">🗺️</div>
-          Geçiş Bilgileri
+
+      <!-- TUTAR -->
+      <div class="amt-card">
+        <div class="amt-label">Geçiş Tutarı</div>
+        <div class="amt-badge">TL</div>
+        <div class="amt-row">
+          <span class="amt-sym">₺</span>
+          <input class="amt-inp" type="number" id="g-amt" placeholder="0,00" step="0.01" min="0" inputmode="decimal">
         </div>
-        <div class="card-b">
-          <div class="f">
-            <label>Plaka</label>
-            <input class="plate-i" type="text" id="g-plate" placeholder="34 ABC 123"
-              oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'');syncPD(this.value)">
+      </div>
+
+      <!-- GİRİŞ NOKTASI — yatay kaydırma -->
+      <div class="card">
+        <div class="card-h"><div class="pip pip-or">🛣️</div>Giriş Noktası</div>
+        <div class="card-b" style="padding:.65rem .85rem">
+          <div class="loc-chips" id="loc-chips">
+            <div class="loc-chip" onclick="selLoc(this,'Osmangazi Köprüsü')">🌉 Osmangazi</div>
+            <div class="loc-chip" onclick="selLoc(this,'FSM Köprüsü')">🌉 FSM</div>
+            <div class="loc-chip" onclick="selLoc(this,'Boğaziçi Köprüsü')">🌉 Boğaziçi</div>
+            <div class="loc-chip" onclick="selLoc(this,'Avrasya Tüneli')">🚇 Avrasya</div>
+            <div class="loc-chip" onclick="selLoc(this,'YSS Köprüsü')">🌉 YSS</div>
+            <div class="loc-chip" onclick="selLoc(this,'Kuzey Marmara Otoyolu')">🛣️ K.Marmara</div>
+            <div class="loc-chip" onclick="selLoc(this,'Kınalı–Sakarya')">🛣️ Kınalı</div>
+            <div class="loc-chip" onclick="selLoc(this,'İzmir–İstanbul Otoyolu')">🛣️ İzmir</div>
+            <div class="loc-chip loc-chip-other" onclick="selLoc(this,'Diğer')">＋ Diğer</div>
           </div>
-          <div class="f">
-            <label>Geçiş Noktası</label>
-            <select id="g-loc">
-              <option value="">— Seçin —</option>
-              <option>Osmangazi Köprüsü</option>
-              <option>Fatih Sultan Mehmet Köprüsü</option>
-              <option>Boğaziçi Köprüsü</option>
-              <option>Avrasya Tüneli</option>
-              <option>Yavuz Sultan Selim Köprüsü</option>
-              <option>İzmir–İstanbul Otoyolu</option>
-              <option>Kuzey Marmara Otoyolu</option>
-              <option>Kınalı–Sakarya Otoyolu</option>
-              <option>Diğer</option>
-            </select>
+          <div id="glc-wrap" style="display:none;margin-top:.65rem">
+            <input type="text" id="g-lc" placeholder="Giriş noktası girin..." style="width:100%;background:var(--c2);border:1.5px solid var(--bdr);border-radius:11px;color:var(--txt);padding:.65rem .9rem;font-size:.9rem;font-family:'Space Grotesk',sans-serif;outline:none;box-sizing:border-box">
           </div>
-          <div class="f" id="glc-wrap" style="display:none">
-            <label>Özel Konum</label>
-            <input type="text" id="g-lc" placeholder="Konum adı...">
+          <div class="exit-toggle" id="exit-toggle" onclick="toggleExitLoc()">
+            <span class="et-ico">＋</span>
+            <span>Çıkış noktası ekle (isteğe bağlı)</span>
           </div>
-          <div class="f">
-            <label>Tutar (₺)</label>
-            <input type="number" id="g-amt" placeholder="0,00" step="0.01" min="0" inputmode="decimal">
-          </div>
-          <div class="f">
-            <label>Not</label>
-            <input type="text" id="g-not" placeholder="Açıklama... (isteğe bağlı)">
+          <div class="exit-loc-wrap" id="exit-loc-wrap">
+            <input type="text" id="g-exit" placeholder="Çıkış noktası girin..." style="width:100%;background:var(--c2);border:1.5px solid var(--bdr);border-radius:11px;color:var(--txt);padding:.65rem .9rem;font-size:.9rem;font-family:'Space Grotesk',sans-serif;outline:none;box-sizing:border-box">
           </div>
         </div>
       </div>
 
-      <button class="btn btn-or" id="btn-save" onclick="savePass()">
-        Geçişi Kaydet
-      </button>
+      <!-- TARİH + NOT yan yana -->
+      <div class="g-2col">
+        <div class="card">
+          <div class="card-h"><div class="pip pip-tl">📅</div>Tarih</div>
+          <div class="card-b">
+            <input type="datetime-local" id="g-date" style="width:100%;background:var(--c2);border:1.5px solid var(--bdr);border-radius:10px;color:var(--txt);padding:.55rem .75rem;font-size:.82rem;font-family:'Space Grotesk',sans-serif;outline:none;box-sizing:border-box;color-scheme:dark">
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-h"><div class="pip pip-tl">📝</div>Not</div>
+          <div class="card-b">
+            <input type="text" id="g-not" placeholder="Açıklama..." style="width:100%;background:var(--c2);border:1.5px solid var(--bdr);border-radius:10px;color:var(--txt);padding:.55rem .75rem;font-size:.82rem;font-family:'Space Grotesk',sans-serif;outline:none;box-sizing:border-box">
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-or" id="btn-save" onclick="savePass()">✓ Geçişi Kaydet</button>
       <div id="g-msg"></div>
     </div>
     <div class="gap"></div>
@@ -473,7 +1238,7 @@
   <div id="pg-filo" class="pg">
 
     <div class="hero">
-      <div class="hero-lbl">Toplam Bakiye</div>
+      <div class="hero-lbl">Toplam Maliyet</div>
       <div class="hero-num" id="f-bal">— <span>₺</span></div>
       <div class="hero-row">
         <div class="hero-chip">
@@ -482,7 +1247,11 @@
         </div>
         <div class="hero-chip">
           <div class="hv" id="f-sp">—</div>
-          <div class="hl">Harcama</div>
+          <div class="hl">HGS</div>
+        </div>
+        <div class="hero-chip">
+          <div class="hv" id="f-fuel">—</div>
+          <div class="hl">Yakıt</div>
         </div>
         <div class="hero-chip">
           <div class="hv" id="f-gc">—</div>
@@ -491,7 +1260,34 @@
       </div>
     </div>
 
-    <div class="dlbl">Araçlar</div>
+    <!-- Bu ay vs geçen ay -->
+    <div style="padding:.75rem 1.1rem 0">
+      <div class="cmp-card">
+        <div class="cmp-head">
+          <div class="cmp-title">📅 Bu Ay vs Geçen Ay</div>
+          <span id="f-cmp-lbl" style="font-size:.65rem;color:var(--sub);font-weight:600"></span>
+        </div>
+        <div id="f-cmp-body">
+          <div class="empty" style="padding:1rem">Yükleniyor…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Araç filtresi -->
+    <div style="padding:.5rem 1.1rem .3rem;display:flex;gap:.5rem;align-items:center">
+      <input type="text" id="f-vsearch" placeholder="🔍 Plaka veya sürücü ara..."
+        oninput="filterFilo()"
+        style="flex:1;background:var(--c1);border:1.5px solid var(--bdr);border-radius:12px;color:var(--txt);padding:.6rem .9rem;font-size:.83rem;font-family:inherit;outline:none;box-sizing:border-box">
+      <select id="f-vsort" onchange="filterFilo()"
+        style="background:var(--c1);border:1.5px solid var(--bdr);border-radius:12px;color:var(--txt);padding:.6rem .75rem;font-size:.8rem;font-family:inherit;outline:none;flex-shrink:0">
+        <option value="spent-desc">En Pahalı</option>
+        <option value="spent-asc">En Ucuz</option>
+        <option value="count-desc">En Çok Geçiş</option>
+        <option value="plate-asc">Plaka A→Z</option>
+      </select>
+    </div>
+
+    <div class="dlbl" id="f-vcount-lbl">Araçlar</div>
     <div class="card" style="margin:0 1.1rem">
       <div id="vlist">
         <div class="empty"><div class="empty-i">🚗</div>Yükleniyor...</div>
@@ -500,6 +1296,36 @@
 
     <div id="psec" style="display:none">
       <div class="dlbl" id="ptitle">Geçişler</div>
+
+      <!-- Geçiş filtresi -->
+      <div style="margin:0 1.1rem .5rem;background:var(--c1);border:1px solid var(--bdr);border-radius:16px;padding:.75rem .9rem;display:flex;flex-direction:column;gap:.5rem">
+        <div style="display:flex;gap:.5rem">
+          <div style="flex:1">
+            <div style="font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--sub);margin-bottom:.3rem">Başlangıç</div>
+            <input type="date" id="f-pdate1" onchange="filterPassages()" style="width:100%;background:var(--c2);border:1.5px solid var(--bdr);border-radius:10px;color:var(--txt);padding:.5rem .7rem;font-size:.8rem;font-family:inherit;outline:none;color-scheme:dark;box-sizing:border-box">
+          </div>
+          <div style="flex:1">
+            <div style="font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--sub);margin-bottom:.3rem">Bitiş</div>
+            <input type="date" id="f-pdate2" onchange="filterPassages()" style="width:100%;background:var(--c2);border:1.5px solid var(--bdr);border-radius:10px;color:var(--txt);padding:.5rem .7rem;font-size:.8rem;font-family:inherit;outline:none;color-scheme:dark;box-sizing:border-box">
+          </div>
+        </div>
+        <div style="display:flex;gap:.5rem">
+          <input type="text" id="f-ploc" placeholder="🛣️ Konum filtrele..." oninput="filterPassages()"
+            style="flex:1;background:var(--c2);border:1.5px solid var(--bdr);border-radius:10px;color:var(--txt);padding:.5rem .75rem;font-size:.8rem;font-family:inherit;outline:none;box-sizing:border-box">
+          <select id="f-psort" onchange="filterPassages()"
+            style="background:var(--c2);border:1.5px solid var(--bdr);border-radius:10px;color:var(--txt);padding:.5rem .65rem;font-size:.78rem;font-family:inherit;outline:none;flex-shrink:0">
+            <option value="date-desc">Yeni→Eski</option>
+            <option value="date-asc">Eski→Yeni</option>
+            <option value="amt-desc">Yüksek Tutar</option>
+            <option value="amt-asc">Düşük Tutar</option>
+          </select>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span id="f-pcount" style="font-size:.72rem;color:var(--sub);font-weight:600"></span>
+          <button onclick="clearPassFilter()" style="background:none;border:none;color:var(--sub);font-size:.72rem;font-weight:700;cursor:pointer;padding:.2rem .4rem">Temizle ✕</button>
+        </div>
+      </div>
+
       <div class="card" style="margin:0 1.1rem">
         <div id="plist">
           <div class="empty">Yükleniyor...</div>
@@ -533,94 +1359,1395 @@
             <label>Sürücü / Sahip</label>
             <input type="text" id="a-own" placeholder="Ad Soyad">
           </div>
-          <div class="f">
-            <label>Başlangıç Bakiyesi (₺)</label>
-            <input type="number" id="a-bal" placeholder="0,00" step="0.01" inputmode="decimal">
-          </div>
           <button class="btn btn-or" onclick="addVeh()">Araç Ekle</button>
           <div id="a-msg"></div>
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-h">
-          <div class="pip pip-tl">💰</div>
-          Bakiye Güncelle
-        </div>
-        <div class="card-b">
-          <div class="f">
-            <label>Plaka</label>
-            <input class="plate-i" type="text" id="u-plate" placeholder="34ABC123"
-              oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')">
-          </div>
-          <div class="f">
-            <label>Yeni Bakiye (₺)</label>
-            <input type="number" id="u-bal" placeholder="0,00" step="0.01" inputmode="decimal">
-          </div>
-          <button class="btn btn-tl" onclick="updBal()">Bakiye Güncelle</button>
-          <div id="u-msg"></div>
-        </div>
-      </div>
     </div>
 
     <div class="gap"></div>
   </div>
 
-</div><!-- /body -->
-<div id="toast"></div>
+  <!-- ════ TAKVİM ════ -->
+  <div id="pg-takvim" class="pg">
 
+    <!-- Ay navigasyonu -->
+    <div class="cal-header">
+      <button class="cal-nav" onclick="calNav(-1)">‹</button>
+      <div class="cal-month" id="cal-month-lbl">—</div>
+      <button class="cal-nav" onclick="calNav(1)">›</button>
+    </div>
+
+    <!-- Ay özet istatistikleri -->
+    <div class="cal-month-stat">
+      <div class="cal-stat-chip"><div class="cal-stat-val" id="cal-m-total">—</div><div class="cal-stat-lbl">Bu Ay</div></div>
+      <div class="cal-stat-chip"><div class="cal-stat-val" id="cal-m-cnt">—</div><div class="cal-stat-lbl">Geçiş</div></div>
+      <div class="cal-stat-chip"><div class="cal-stat-val" id="cal-m-days">—</div><div class="cal-stat-lbl">Aktif Gün</div></div>
+    </div>
+
+    <!-- Legend -->
+    <div class="cal-legend">
+      <div class="cal-leg-item"><div class="cal-leg-dot" style="background:var(--or)"></div>Geçiş</div>
+      <div class="cal-leg-item"><div class="cal-leg-dot" style="background:#ef4444"></div>Resmi Tatil</div>
+      <div class="cal-leg-item"><div class="cal-leg-dot" style="background:#3b82f6"></div>Özel Gün</div>
+    </div>
+
+    <!-- Takvim grid -->
+    <div class="cal-grid-wrap">
+      <div class="cal-dow">
+        <span>Pzt</span><span>Sal</span><span>Çar</span><span>Per</span>
+        <span>Cum</span><span>Cmt</span><span>Paz</span>
+      </div>
+      <div class="cal-days" id="cal-days"></div>
+    </div>
+
+    <!-- Özel gün ekle butonu -->
+    <div class="cal-add-btn" onclick="openSpecialModal()">
+      <span>＋</span> Özel Gün Ekle / Yönet
+    </div>
+
+    <!-- Seçili gün detay -->
+    <div class="cal-detail" id="cal-detail" style="display:none">
+      <div class="cal-detail-head" id="cal-detail-head">—</div>
+      <div id="cal-detail-list"></div>
+    </div>
+
+    <div class="gap"></div>
+  </div>
+
+  <!-- ÖZEL GÜN MODAL -->
+  <div id="m-special" onclick="if(event.target===this)closeSpecialModal()">
+    <div class="m-special-box">
+      <div class="m-spec-head">
+        <div class="m-spec-title">📌 Özel Günler</div>
+        <button class="m-spec-close" onclick="closeSpecialModal()">✕</button>
+      </div>
+      <!-- Ekle formu -->
+      <div style="display:flex;flex-direction:column;gap:.6rem;margin-bottom:1rem">
+        <input type="text" id="spec-name-inp" placeholder="Gün adı (örn: Müşteri Toplantısı)" style="width:100%;background:var(--c2);border:1.5px solid var(--bdr);border-radius:12px;color:var(--txt);padding:.7rem 1rem;font-size:.88rem;font-family:inherit;outline:none;box-sizing:border-box">
+        <div style="display:flex;gap:.5rem">
+          <input type="date" id="spec-date-inp" style="flex:1;background:var(--c2);border:1.5px solid var(--bdr);border-radius:12px;color:var(--txt);padding:.7rem .85rem;font-size:.88rem;font-family:inherit;outline:none;color-scheme:dark;box-sizing:border-box">
+          <button onclick="addSpecialDay()" style="padding:.7rem 1.1rem;border:none;border-radius:12px;background:linear-gradient(135deg,var(--or),var(--or2));color:#fff;font-weight:700;font-family:inherit;font-size:.85rem;cursor:pointer;white-space:nowrap">Ekle</button>
+        </div>
+      </div>
+      <!-- Liste -->
+      <div id="spec-list" style="max-height:260px;overflow-y:auto">
+        <div class="empty" style="padding:1rem 0"><div class="empty-i">📌</div>Özel gün yok</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ ANALİZ ════ -->
+  <div id="pg-analiz" class="pg">
+    <div class="an-sec">
+
+      <!-- Özet -->
+      <div class="an-summary" id="an-summary">
+        <div class="an-chip"><div class="an-chip-val" id="an-total">—</div><div class="an-chip-lbl">Toplam</div></div>
+        <div class="an-chip"><div class="an-chip-val" id="an-avg">—</div><div class="an-chip-lbl">Ort/Geçiş</div></div>
+        <div class="an-chip"><div class="an-chip-val" id="an-cnt">—</div><div class="an-chip-lbl">Geçiş</div></div>
+      </div>
+
+      <!-- Aylık Harcama -->
+      <div class="an-card">
+        <div class="an-head"><span>📊</span> Aylık Harcama (Son 6 Ay)</div>
+        <div class="an-body">
+          <div class="bar-chart" id="an-bars">
+            <div class="empty" style="width:100%"><div class="empty-i">📊</div>Yükleniyor...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- En Pahalı Güzergahlar -->
+      <div class="an-card">
+        <div class="an-head"><span>🛣️</span> En Pahalı Güzergahlar</div>
+        <div class="an-body" id="an-routes">
+          <div class="empty"><div class="empty-i">🛣️</div>Yükleniyor...</div>
+        </div>
+      </div>
+
+      <!-- Araç Karşılaştırması -->
+      <div class="an-card">
+        <div class="an-head"><span>🚗</span> Araç Bazlı Harcama</div>
+        <div class="an-body" id="an-vehicles">
+          <div class="empty"><div class="empty-i">🚗</div>Yükleniyor...</div>
+        </div>
+      </div>
+
+      <!-- Bu Ay vs Geçen Ay -->
+      <div class="cmp-card">
+        <div class="cmp-head">
+          <div class="cmp-title">📅 Bu Ay vs Geçen Ay</div>
+          <span id="an-cmp-lbl" style="font-size:.65rem;color:var(--sub);font-weight:600"></span>
+        </div>
+        <div id="an-cmp-body">
+          <div class="empty" style="padding:1rem">Yükleniyor…</div>
+        </div>
+      </div>
+
+      <!-- Haftalık Trend -->
+      <div class="an-card">
+        <div class="an-head"><span>📈</span> Haftalık Trend (Son 4 Hafta)</div>
+        <div class="an-body">
+          <div class="week-chart" id="an-weeks">
+            <div class="empty" style="width:100%"><div class="empty-i">📈</div>Yükleniyor...</div>
+          </div>
+          <div id="an-week-legend" style="display:flex;gap:.85rem;margin-top:.75rem;flex-wrap:wrap"></div>
+        </div>
+      </div>
+
+      <!-- Saatlik Yoğunluk -->
+      <div class="an-card">
+        <div class="an-head"><span>🕐</span> En Yoğun Saatler</div>
+        <div class="an-body">
+          <div class="hour-chart" id="an-hours">
+            <div class="empty" style="width:100%"><div class="empty-i">🕐</div>Yükleniyor...</div>
+          </div>
+          <div id="an-peak-info" style="margin-top:.75rem;font-size:.75rem;color:var(--sub);text-align:center"></div>
+        </div>
+      </div>
+
+    </div>
+    <div class="gap"></div>
+  </div>
+
+  <!-- ════ AYARLAR ════ -->
+  <div id="pg-yakitlar" class="pg">
+
+    <!-- Tarih chip'leri -->
+    <div style="display:flex;gap:.45rem;overflow-x:auto;padding:.75rem 1.1rem .4rem;scrollbar-width:none">
+      <button class="btn-sm" id="yk-c-all"    onclick="setMobYkChip('all',this)"    style="background:var(--or);color:#fff;border-color:var(--or);flex-shrink:0">Tümü</button>
+      <button class="btn-sm" id="yk-c-month"  onclick="setMobYkChip('month',this)"  style="flex-shrink:0">Bu Ay</button>
+      <button class="btn-sm" id="yk-c-week"   onclick="setMobYkChip('week',this)"   style="flex-shrink:0">Bu Hafta</button>
+      <button class="btn-sm" id="yk-c-today"  onclick="setMobYkChip('today',this)"  style="flex-shrink:0">Bugün</button>
+    </div>
+
+    <!-- Stat kartları -->
+    <div class="yk-stats">
+      <div class="yk-stat s-tl">
+        <div class="yk-stat-ico">⛽</div>
+        <div class="yk-stat-val tl" id="myk-cnt">—</div>
+        <div class="yk-stat-lbl">Kayıt</div>
+      </div>
+      <div class="yk-stat s-or">
+        <div class="yk-stat-ico">💸</div>
+        <div class="yk-stat-val or" id="myk-amt">—</div>
+        <div class="yk-stat-lbl">Toplam Tutar</div>
+      </div>
+      <div class="yk-stat s-bl">
+        <div class="yk-stat-ico">💧</div>
+        <div class="yk-stat-val bl" id="myk-litre">—</div>
+        <div class="yk-stat-lbl">Toplam Litre</div>
+      </div>
+      <div class="yk-stat s-dim">
+        <div class="yk-stat-ico">📊</div>
+        <div class="yk-stat-val" id="myk-price">—</div>
+        <div class="yk-stat-lbl">Ort. ₺/L</div>
+      </div>
+    </div>
+
+    <!-- Araç bazlı özet -->
+    <div style="margin:.5rem 1.1rem 0;background:var(--c1);border:1px solid var(--bdr);border-radius:18px;overflow:hidden" id="yk-veh-card">
+      <div style="padding:.6rem 1rem .5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bdr)">
+        <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--sub)">🚗 Araç Bazlı</div>
+        <button onclick="toggleYkVehCard()" id="yk-veh-toggle" style="background:none;border:none;color:var(--sub);font-size:.72rem;font-weight:700;cursor:pointer">Gizle ▲</button>
+      </div>
+      <div style="padding:.6rem 1rem" id="yk-veh-list">
+        <div style="text-align:center;padding:.75rem;color:var(--sub);font-size:.82rem">Yükleniyor…</div>
+      </div>
+    </div>
+
+    <div class="sec" style="padding:.6rem 1.1rem 0">
+      <div style="display:flex;gap:.5rem;margin-bottom:.65rem">
+        <button class="btn btn-or" style="flex:1;justify-content:center" onclick="openYakitModal()">⛽ Yakıt Ekle</button>
+      </div>
+      <div style="position:relative;margin-bottom:.65rem">
+        <input type="text" id="yakit-mob-search" placeholder="Plaka veya istasyon ara…" oninput="mobYkFilter()"
+          style="width:100%;background:var(--c2);border:1.5px solid var(--bdr);border-radius:12px;color:var(--txt);padding:.55rem .85rem .55rem 2.2rem;font-size:.85rem;font-family:'Space Grotesk',sans-serif;outline:none">
+        <span style="position:absolute;left:.75rem;top:50%;transform:translateY(-50%);opacity:.4;pointer-events:none">🔍</span>
+      </div>
+      <div id="yakit-mob-list"></div>
+    </div>
+    <div class="gap"></div>
+  </div>
+
+  <div id="pg-ayarlar" class="pg">
+    <div class="sec" style="padding:.75rem 1.1rem">
+
+      <!-- Profil Kartı -->
+      <div class="ay-card" style="padding:1.25rem;margin-bottom:.5rem">
+        <input type="file" id="ay-photo-inp" accept="image/*" style="display:none" onchange="uploadAyarPhoto(this)">
+        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
+          <div style="position:relative;flex-shrink:0" onclick="document.getElementById('ay-photo-inp').click()">
+            <div id="ay-avatar" style="width:58px;height:58px;border-radius:50%;background:var(--c2);border:2px solid var(--bdr);display:flex;align-items:center;justify-content:center;font-size:1.6rem;overflow:hidden;cursor:pointer">👤</div>
+            <div style="position:absolute;bottom:0;right:0;background:var(--or);border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:.6rem;cursor:pointer">📷</div>
+          </div>
+          <div style="flex:1;min-width:0">
+            <div id="ay-name" style="font-weight:800;font-size:1rem">—</div>
+            <div id="ay-email" style="font-size:.72rem;color:var(--sub);margin-top:.1rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">—</div>
+            <div id="ay-role" style="font-size:.7rem;margin-top:.15rem;color:var(--tl)">—</div>
+          </div>
+        </div>
+        <div class="f" style="margin-bottom:.6rem">
+          <label>Görünen Ad</label>
+          <input type="text" id="ay-name-inp" placeholder="Ad Soyad">
+        </div>
+        <button class="btn btn-or" style="width:100%" onclick="saveAyarName()">💾 Kaydet</button>
+        <div id="ay-msg" style="margin-top:.5rem;font-size:.8rem"></div>
+      </div>
+
+      <!-- KİŞİSEL -->
+      <div class="ay-sec-title">Kişisel</div>
+      <div class="ay-card">
+        <div class="sw-row">
+          <div class="sw-lbl"><span>🔔</span> Geçiş Bildirimleri</div>
+          <label class="sw"><input type="checkbox" id="sw-notif" onchange="toggleNotif(this)"><span class="sw-sl"></span></label>
+        </div>
+      </div>
+
+      <!-- UYGULAMA -->
+      <div class="ay-sec-title">Uygulama</div>
+      <div class="ay-card">
+        <div class="sw-row">
+          <div class="sw-lbl"><span>🌙</span> Koyu Tema</div>
+          <label class="sw"><input type="checkbox" id="sw-theme" onchange="toggleTheme(this)"><span class="sw-sl"></span></label>
+        </div>
+        <div class="sw-row">
+          <div class="sw-lbl"><span>🔢</span> TR Para Formatı <span style="font-size:.65rem;color:var(--sub);font-weight:400">(1.234,56)</span></div>
+          <label class="sw"><input type="checkbox" id="sw-cur" onchange="toggleCur(this)"><span class="sw-sl"></span></label>
+        </div>
+        <div style="padding:.85rem 1.25rem">
+          <div class="sw-lbl" style="margin-bottom:.65rem"><span>🎨</span> Tema Rengi</div>
+          <div id="color-swatches" style="display:flex;gap:.5rem;flex-wrap:wrap"></div>
+        </div>
+      </div>
+
+      <!-- GEÇİŞ KOLAYLIĞI -->
+      <div class="ay-sec-title">Geçiş Kolaylığı</div>
+      <div class="ay-card">
+        <div class="sw-row">
+          <div class="sw-lbl"><span>🚗</span> Son Aracı Hatırla</div>
+          <label class="sw"><input type="checkbox" id="sw-lastv" onchange="savePref('lastVehicle',this.checked)"><span class="sw-sl"></span></label>
+        </div>
+        <div style="padding:.75rem 1.25rem;border-bottom:1px solid var(--bdr)">
+          <div class="sw-lbl" style="margin-bottom:.6rem"><span>⭐</span> Favori Geçiş Noktası</div>
+          <select id="sel-favloc" onchange="savePref('favLoc',this.value)" style="width:100%;background:var(--c2);border:1.5px solid var(--bdr);border-radius:12px;color:var(--txt);padding:.6rem .9rem;font-size:.85rem;font-family:inherit;outline:none">
+            <option value="">— Seçilmedi —</option>
+            <option>Osmangazi Köprüsü</option>
+            <option>FSM Köprüsü</option>
+            <option>Boğaziçi Köprüsü</option>
+            <option>Avrasya Tüneli</option>
+            <option>YSS Köprüsü</option>
+            <option>Kuzey Marmara Otoyolu</option>
+            <option>Kınalı–Sakarya</option>
+            <option>İzmir–İstanbul Otoyolu</option>
+            <option>Diğer</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="text-align:center;color:var(--sub);font-size:.7rem;padding:.75rem">HGS Filo Takip Sistemi v1.0</div>
+    </div>
+    <div class="gap"></div>
+  </div>
+
+</div><!-- /body -->
+
+<!-- ══ GLOBAL ARAMA ══ -->
+<div id="gsearch-overlay" onclick="if(event.target===this)closeGlobalSearch()">
+  <div class="gs-bar">
+    <input class="gs-input" type="text" id="gs-inp"
+      placeholder="Plaka, geçiş noktası, istasyon…"
+      oninput="runGlobalSearch(this.value)">
+    <button class="gs-close" onclick="closeGlobalSearch()">✕</button>
+  </div>
+  <div class="gs-results" id="gs-results">
+    <div class="gs-empty"><div class="gs-empty-ico">🔍</div>Aramak istediğinizi yazın…</div>
+  </div>
+</div>
+
+<!-- ══ HIZLI GEÇİŞ SHEET ══ -->
+<div id="qp-sheet" onclick="if(event.target===this)closeQpSheet()">
+  <div class="qp-box">
+    <div class="qp-head">
+      <div class="qp-title">➕ Hızlı Geçiş Ekle</div>
+      <button class="qp-close" onclick="closeQpSheet()">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:.75rem">
+      <div>
+        <div class="qp-lbl">Araç</div>
+        <select id="qp-plate" style="width:100%;background:var(--c2);border:1.5px solid var(--bdr);border-radius:12px;color:var(--txt);padding:.65rem .9rem;font-size:.9rem;font-family:inherit;outline:none"></select>
+      </div>
+      <div>
+        <div class="qp-lbl">Tutar (₺)</div>
+        <input type="number" id="qp-amt" placeholder="0,00" step="0.01" min="0" inputmode="decimal"
+          style="width:100%;background:var(--c2);border:1.5px solid var(--bdr);border-radius:12px;color:var(--txt);padding:.75rem 1rem;font-size:1.6rem;font-weight:900;font-family:inherit;outline:none;letter-spacing:-.02em">
+      </div>
+      <div>
+        <div class="qp-lbl">Geçiş Noktası</div>
+        <div class="qp-chips" id="qp-chips"></div>
+      </div>
+      <div>
+        <div class="qp-lbl">Tarih (isteğe bağlı)</div>
+        <input type="datetime-local" id="qp-date"
+          style="width:100%;background:var(--c2);border:1.5px solid var(--bdr);border-radius:12px;color:var(--txt);padding:.65rem .9rem;font-size:.85rem;font-family:inherit;outline:none;color-scheme:dark">
+      </div>
+      <div id="qp-msg" style="font-size:.82rem;color:var(--or);min-height:1.1rem"></div>
+      <button id="qp-save-btn" onclick="saveQpPass()"
+        style="background:linear-gradient(135deg,var(--or),var(--or2));border:none;border-radius:14px;color:#fff;font-weight:700;font-size:.95rem;padding:.95rem;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:.5rem">
+        ✓ Geçişi Kaydet
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- FAB -->
+<button class="fab" id="fab-btn" onclick="openQpSheet()" title="Hızlı Geçiş Ekle">＋</button>
+
+<div id="toast"></div>
+<div id="notif-banner" onclick="closeNotifBanner()">
+  <div class="nb-ico">🛣️</div>
+  <div class="nb-body">
+    <div class="nb-title" id="nb-title">Yeni Geçiş</div>
+    <div class="nb-sub"  id="nb-sub">—</div>
+  </div>
+  <div class="nb-close">✕</div>
+</div>
+
+<!-- PROFİL MODAL -->
+<div id="m-yakit-mob" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:1rem">
+  <div style="background:var(--c1);border:1px solid var(--bdr);border-radius:20px;padding:1.5rem;width:100%;max-width:380px;max-height:90vh;overflow-y:auto">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem">
+      <div style="font-size:1rem;font-weight:800">⛽ Yakıt Kaydı Ekle</div>
+      <button onclick="closeYakitModal()" style="background:none;border:none;color:var(--sub);font-size:1.2rem;cursor:pointer">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:.6rem">
+      <div><label style="font-size:.72rem;font-weight:700;color:var(--sub);display:block;margin-bottom:.25rem">Plaka *</label>
+        <select id="mym-plate" style="width:100%;background:var(--c2);border:1.5px solid var(--bdr);border-radius:10px;color:var(--txt);padding:.5rem .75rem;font-size:.88rem;font-family:'Space Grotesk',sans-serif;outline:none">
+          <option value="">Araç seç...</option>
+        </select>
+      </div>
+      <div><label style="font-size:.72rem;font-weight:700;color:var(--sub);display:block;margin-bottom:.25rem">Tarih *</label>
+        <input type="datetime-local" id="mym-date" style="width:100%;background:var(--c2);border:1.5px solid var(--bdr);border-radius:10px;color:var(--txt);padding:.5rem .75rem;font-size:.88rem;font-family:'Space Grotesk',sans-serif;outline:none">
+      </div>
+      <div><label style="font-size:.72rem;font-weight:700;color:var(--sub);display:block;margin-bottom:.25rem">İstasyon</label>
+        <input type="text" id="mym-station" placeholder="Opet, BP, Shell..." style="width:100%;background:var(--c2);border:1.5px solid var(--bdr);border-radius:10px;color:var(--txt);padding:.5rem .75rem;font-size:.88rem;font-family:'Space Grotesk',sans-serif;outline:none">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem">
+        <div><label style="font-size:.72rem;font-weight:700;color:var(--sub);display:block;margin-bottom:.25rem">Miktar (L) *</label>
+          <input type="number" id="mym-litre" placeholder="50" step="0.01" style="width:100%;background:var(--c2);border:1.5px solid var(--bdr);border-radius:10px;color:var(--txt);padding:.5rem .75rem;font-size:.88rem;font-family:'Space Grotesk',sans-serif;outline:none">
+        </div>
+        <div><label style="font-size:.72rem;font-weight:700;color:var(--sub);display:block;margin-bottom:.25rem">Tutar (₺) *</label>
+          <input type="number" id="mym-amount" placeholder="2500" step="0.01" style="width:100%;background:var(--c2);border:1.5px solid var(--bdr);border-radius:10px;color:var(--txt);padding:.5rem .75rem;font-size:.88rem;font-family:'Space Grotesk',sans-serif;outline:none">
+        </div>
+      </div>
+      <div><label style="font-size:.72rem;font-weight:700;color:var(--sub);display:block;margin-bottom:.25rem">KM</label>
+        <input type="number" id="mym-km" placeholder="125000" style="width:100%;background:var(--c2);border:1.5px solid var(--bdr);border-radius:10px;color:var(--txt);padding:.5rem .75rem;font-size:.88rem;font-family:'Space Grotesk',sans-serif;outline:none">
+      </div>
+      <div><label style="font-size:.72rem;font-weight:700;color:var(--sub);display:block;margin-bottom:.25rem">Not</label>
+        <input type="text" id="mym-note" placeholder="İsteğe bağlı..." style="width:100%;background:var(--c2);border:1.5px solid var(--bdr);border-radius:10px;color:var(--txt);padding:.5rem .75rem;font-size:.88rem;font-family:'Space Grotesk',sans-serif;outline:none">
+      </div>
+      <div id="mym-msg" style="font-size:.8rem;color:var(--or)"></div>
+      <button onclick="saveMobileYakit()" style="background:linear-gradient(135deg,var(--or),var(--or2));border:none;border-radius:12px;color:#fff;font-weight:700;font-size:.9rem;padding:.75rem;cursor:pointer;font-family:'Space Grotesk',sans-serif;margin-top:.25rem">Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<div id="m-profile" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:1rem">
+  <div style="background:var(--c1);border:1px solid var(--bdr);border-radius:20px;padding:1.5rem;width:100%;max-width:360px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem">
+      <div style="font-size:1rem;font-weight:800">👤 Profilim</div>
+      <button onclick="closeProfile()" style="background:none;border:none;color:var(--sub);font-size:1.2rem;cursor:pointer">✕</button>
+    </div>
+    <div style="background:var(--c2);border:1px solid var(--bdr);border-radius:12px;padding:.85rem 1rem;margin-bottom:.75rem">
+      <div style="font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--sub);margin-bottom:.25rem">E-posta</div>
+      <div style="font-weight:600;font-size:.9rem" id="pr-email">—</div>
+    </div>
+    <div style="background:var(--c2);border:1px solid var(--bdr);border-radius:12px;padding:.85rem 1rem;margin-bottom:.75rem">
+      <div style="font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--sub);margin-bottom:.25rem">Rol</div>
+      <div style="font-weight:600;font-size:.9rem" id="pr-role">—</div>
+    </div>
+    <div style="margin-bottom:.75rem">
+      <label style="display:block;font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--sub);margin-bottom:.4rem">Ad Soyad</label>
+      <input type="text" id="pr-name" style="width:100%;background:var(--c2);border:1.5px solid var(--bdr);border-radius:12px;color:var(--txt);padding:.75rem 1rem;font-size:.9rem;font-weight:500;font-family:inherit;outline:none">
+    </div>
+    <div id="pr-msg" style="margin-bottom:.75rem"></div>
+    <div style="display:flex;gap:.5rem">
+      <button onclick="closeProfile()" style="flex:1;padding:.8rem;border:1px solid var(--bdr);border-radius:12px;background:var(--c2);color:var(--txt);font-weight:600;font-family:inherit;cursor:pointer">İptal</button>
+      <button onclick="saveProfile()" style="flex:1;padding:.8rem;border:none;border-radius:12px;background:linear-gradient(135deg,var(--or),var(--or2));color:#fff;font-weight:700;font-family:inherit;cursor:pointer">Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script>
-const API = "http://localhost:8000";
+const firebaseConfig = {
+  apiKey: "AIzaSyB6JddjggHwCbK076wGLhZuWN3bQpwPbGk",
+  authDomain: "hgs-system.firebaseapp.com",
+  projectId: "hgs-system",
+  storageBucket: "hgs-system.firebasestorage.app",
+  messagingSenderId: "667151410768",
+  appId: "1:667151410768:web:ebd17e5b7cc2e7f4991355"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db   = firebase.firestore();
+const TS   = firebase.firestore.FieldValue.serverTimestamp;
+
+let currentUser = null, currentBranchId = null, _branchPlates = [];
+let _allPassages = [], _allFuels = [], _dataLoaded = false;
+
+// ── CACHE ──
+const MOB_CACHE_TTL = 24 * 60 * 60000; // 24 saat
+function mobLsKey() { return 'hgs_mob_v1_' + (currentBranchId || 'all'); }
+function mobLsSave() {
+  try {
+    const payload = { ts: Date.now(), vehicles: _allVehicles, passages: _allPassages, fuels: _allFuels };
+    localStorage.setItem(mobLsKey(), JSON.stringify(payload));
+  } catch(e) {}
+}
+function mobLsLoad() {
+  try {
+    const raw = localStorage.getItem(mobLsKey());
+    if (!raw) return false;
+    const { ts, vehicles, passages, fuels } = JSON.parse(raw);
+    if (Date.now() - ts > MOB_CACHE_TTL) return false;
+    _allVehicles  = vehicles  || [];
+    _allPassages  = passages  || [];
+    _allFuels     = fuels     || [];
+    _branchPlates = _allVehicles.map(v => v.plate).filter(Boolean);
+    return true;
+  } catch(e) { return false; }
+}
+function mobLsClear() { try { localStorage.removeItem(mobLsKey()); } catch(e) {} }
+
+// ── ŞUBE FİLTRELİ YARDIMCILAR ──
+function bQv() {
+  if (currentBranchId) return db.collection('vehicles').where('branch_id','==',currentBranchId);
+  return db.collection('vehicles');
+}
+async function fetchBranch(col, opts) {
+  // Cache yüklüyse oradan döndür
+  if (_dataLoaded) {
+    let arr = col === 'passages' ? _allPassages : col === 'fuels' ? _allFuels : [];
+    if (opts?.orderBy) {
+      arr = [...arr].sort((a,b) => {
+        const va = a[opts.orderBy], vb = b[opts.orderBy];
+        const ta = va?.toDate ? va.toDate().getTime() : (va?.seconds ? va.seconds*1000 : (typeof va==='number'?va:0));
+        const tb = vb?.toDate ? vb.toDate().getTime() : (vb?.seconds ? vb.seconds*1000 : (typeof vb==='number'?vb:0));
+        return opts.desc ? tb-ta : ta-tb;
+      });
+    }
+    if (opts?.limit) arr = arr.slice(0, opts.limit);
+    const docs = arr.map(d => ({ data: () => d, id: d.id||'' }));
+    return { docs, empty: docs.length === 0 };
+  }
+  // Firestore'dan çek
+  if (!currentBranchId || !_branchPlates.length) {
+    let q = db.collection(col);
+    if (opts?.orderBy) q = q.orderBy(opts.orderBy, opts.desc ? 'desc' : 'asc');
+    if (opts?.limit)   q = q.limit(opts.limit);
+    return q.get();
+  }
+  const batches = [];
+  for (let i = 0; i < _branchPlates.length; i += 30) {
+    let bq = db.collection(col).where('plate','in',_branchPlates.slice(i,i+30));
+    if (opts?.limit) bq = bq.limit(opts.limit);
+    batches.push(bq.get());
+  }
+  const snaps = await Promise.all(batches);
+  let docs = [];
+  snaps.forEach(s => docs.push(...s.docs));
+  if (opts?.orderBy) {
+    docs.sort((a,b) => {
+      const va = a.data()[opts.orderBy], vb = b.data()[opts.orderBy];
+      const ta = va?.toDate ? va.toDate().getTime() : (typeof va==='number'?va:0);
+      const tb = vb?.toDate ? vb.toDate().getTime() : (typeof vb==='number'?vb:0);
+      return opts.desc ? tb-ta : ta-tb;
+    });
+  }
+  if (opts?.limit) docs = docs.slice(0, opts.limit);
+  return { docs, empty: docs.length === 0 };
+}
+
+// ── MERKEZİ VERİ YÜKLEME ──
+async function loadAllData() {
+  if (mobLsLoad()) { _dataLoaded = true; return; }
+  // Araçları çek
+  const vSnap = await bQv().get();
+  _allVehicles  = vSnap.docs.map(d => d.data()).sort((a,b)=>(a.plate||'').localeCompare(b.plate||''));
+  _branchPlates = _allVehicles.map(v => v.plate).filter(Boolean);
+  // Geçiş ve yakıtları çek
+  if (_branchPlates.length) {
+    const passP = [], fuelP = [];
+    for (let i = 0; i < _branchPlates.length; i += 30) {
+      const batch = _branchPlates.slice(i, i+30);
+      passP.push(db.collection('passages').where('plate','in',batch).limit(2000).get());
+      fuelP.push(db.collection('fuels').where('plate','in',batch).limit(2000).get());
+    }
+    const [passSnaps, fuelSnaps] = await Promise.all([Promise.all(passP), Promise.all(fuelP)]);
+    const pDocs = [], fDocs = [];
+    passSnaps.forEach(s => pDocs.push(...s.docs));
+    fuelSnaps.forEach(s => fDocs.push(...s.docs));
+    _allPassages = pDocs.map(d => ({ id:d.id, ...d.data() }));
+    _allFuels    = fDocs.map(d => ({ id:d.id, ...d.data() }));
+  } else if (!currentBranchId) {
+    const [pSnap, fSnap] = await Promise.all([
+      db.collection('passages').limit(2000).get(),
+      db.collection('fuels').limit(2000).get()
+    ]);
+    _allPassages = pSnap.docs.map(d => ({ id:d.id, ...d.data() }));
+    _allFuels    = fSnap.docs.map(d => ({ id:d.id, ...d.data() }));
+  }
+  _dataLoaded = true;
+  mobLsSave();
+}
+
+// Tema sayfa yüklenince hemen uygula
+(function(){
+  const l = localStorage.getItem("hgs_theme");
+  document.documentElement.setAttribute("data-theme", l === "light" ? "light" : "dark");
+  const acc = localStorage.getItem("hgs_accent");
+  if (acc) {
+    const col = [
+      {c:"#ff6b35",c2:"#ff9a00"},{c:"#3b82f6",c2:"#60a5fa"},{c:"#00d4aa",c2:"#00a87e"},
+      {c:"#8b5cf6",c2:"#a78bfa"},{c:"#ef4444",c2:"#f87171"},{c:"#ec4899",c2:"#f472b6"},{c:"#f59e0b",c2:"#fbbf24"}
+    ].find(a=>a.c===acc);
+    if (col) { document.documentElement.style.setProperty("--or",col.c); document.documentElement.style.setProperty("--or2",col.c2); const r=parseInt(col.c.slice(1,3),16),g=parseInt(col.c.slice(3,5),16),b=parseInt(col.c.slice(5,7),16); document.documentElement.style.setProperty("--glow",`rgba(${r},${g},${b},0.07)`); }
+  }
+})();
 
 // ── AUTH GUARD ──
-const token = localStorage.getItem("hgs_token");
-const user  = JSON.parse(localStorage.getItem("hgs_user") || "{}");
-if (!token) location.href = "login.html?to=index.html";
-
-function logout() {
-  localStorage.removeItem("hgs_token");
-  localStorage.removeItem("hgs_user");
-  location.href = "login.html";
-}
-
-async function api(m, p, b) {
-  try {
-    const r = await fetch(API + p, {
-      method: m,
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + token
-      },
-      body: b ? JSON.stringify(b) : undefined
+auth.onAuthStateChanged(async fbUser => {
+  if (!fbUser) { location.href = "login.html?to=index.html"; return; }
+  currentUser = fbUser;
+  const userDoc = await db.collection("user").doc(fbUser.uid).get();
+  const data = userDoc.data() || {};
+  currentBranchId = data.branch_id || null;
+  const displayName = data.display_name || fbUser.email;
+  document.getElementById("uname").textContent = displayName;
+  // Drawer user card
+  document.getElementById("dr-nm").textContent  = displayName;
+  document.getElementById("dr-em").textContent  = data.email || fbUser.email || "";
+  document.getElementById("dr-rol").textContent = data.role === "admin" ? "🔑 Admin" : "👤 Kullanıcı";
+  if (data.photo_url) {
+    document.getElementById("dr-av").innerHTML = `<img src="${data.photo_url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+  } else {
+    const initials = (displayName||"?").split(" ").map(w=>w[0]).slice(0,2).join("").toUpperCase();
+    document.getElementById("dr-av").textContent = initials;
+  }
+  // Splash kapat
+  const sp = document.getElementById("mob-splash");
+  if (sp) { setTimeout(() => { sp.style.opacity="0"; setTimeout(()=>sp.remove(),500); }, 2800); }
+  ping();
+  setInterval(ping, 10000);
+  if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
+  applyTheme();
+  // Tüm veriyi tek seferinde yükle (cache varsa Firestore'a gitme)
+  await loadAllData();
+  renderVsel(_allVehicles);
+  // Son aracı otomatik seç
+  if (localStorage.getItem("hgs_lastv") !== "off") {
+    const lastPlate = localStorage.getItem("hgs_lastplate");
+    if (lastPlate) {
+      document.querySelectorAll(".vsel-item").forEach(i => {
+        if (i.querySelector(".vi-plate")?.textContent?.includes(lastPlate)) {
+          const ico = i.querySelector(".vi-plate")?.textContent?.split(" ")[0] || "🚗";
+          selVeh(i, lastPlate, ico);
+        }
+      });
+    }
+  }
+  // Favori konumu otomatik seç
+  const favLoc = localStorage.getItem("hgs_favloc");
+  if (favLoc) {
+    document.querySelectorAll(".loc-chip").forEach(c => {
+      if (c.getAttribute("onclick")?.includes(favLoc.replace(/'/g,"\\'"))) selLoc(c, favLoc);
     });
-    if (r.status === 401) { logout(); return; }
-    if (!r.ok) { const e = await r.json(); throw new Error(e.detail || "Hata"); }
-    return r.json();
-  } catch(e) {
-    if (e.message === "Failed to fetch") throw new Error("API bağlantısı yok");
-    throw e;
   }
+  loadHomeStats();
+  loadRecentPassages();
+  loadBadges();
+  initQuickBar();
+  loadDash();
+
+  // Shortcut URL param — Android uzun bas kısayolları için
+  const _pgParam = new URLSearchParams(location.search).get('pg');
+  if (_pgParam) {
+    const _pgMap = {
+      gecis:    () => { goD('gecis','Geçiş Ekle','Yeni geçiş kaydı'); clearBadge('gecis'); },
+      filo:     () => goD('filo','Filo Özeti','Araç ve harcama istatistikleri'),
+      takvim:   () => { goD('takvim','Takvim','Aylık geçiş görünümü'); loadTakvim(); },
+      yakitlar: () => { goD('yakitlar','Yakıtlar','Yakıt tüketim kayıtları'); loadMobileYakitlar(); },
+      analiz:   () => { goD('analiz','Analiz','Harcama ve güzergah istatistikleri'); loadAnaliz(); },
+      ayarlar:  () => { goD('ayarlar','Ayarlar','Hesap ve uygulama ayarları'); loadAyarlar(); },
+    };
+    const _fn = _pgMap[_pgParam];
+    if (_fn) _fn();
+  }
+
+  // Tüm kullanıcılara geçiş bildirimi — Firestore realtime dinleyici
+  startPassNotifListener();
+});
+
+function logout() { auth.signOut().then(() => location.href = "login.html"); }
+
+async function refreshAfterWrite() {
+  mobLsClear();
+  _dataLoaded = false;
+  _gsData = null;
+  await loadAllData();
+  loadHomeStats();
+  loadRecentPassages();
+  loadBadges();
 }
 
-async function ping() {
+function startPassNotifListener() {
+  let bulkTimer = null, bulkCount = 0, lastDocs = [];
+  const since = firebase.firestore.Timestamp.now();
+  db.collection("passages")
+    .where("passed_at", ">=", since)
+    .onSnapshot(snapshot => {
+      const added = snapshot.docChanges().filter(c => c.type === "added");
+      if (!added.length) return;
+      bulkCount += added.length;
+      lastDocs = added;
+      clearTimeout(bulkTimer);
+      bulkTimer = setTimeout(() => {
+        if (bulkCount === 1) {
+          const d = lastDocs[0].doc.data();
+          sendNotif(`🛣️ Yeni Geçiş — ${d.plate}`, `${d.location||"—"} · ${tl(d.amount||0)}`);
+        } else {
+          sendNotif("📥 Toplu Geçiş Eklendi", `${bulkCount} yeni geçiş kaydedildi`);
+        }
+        bulkCount = 0; lastDocs = [];
+      }, 1200);
+    });
+}
+
+async function loadAyarlar() {
+  if (!currentUser) return;
   try {
-    await fetch(API + "/vehicles");
-    document.getElementById("adot").className = "adot on";
-    document.getElementById("albl").textContent = "Bağlı";
-  } catch {
-    document.getElementById("adot").className = "adot off";
-    document.getElementById("albl").textContent = "Bağlantı yok";
+    const doc = await db.collection("user").doc(currentUser.uid).get();
+    const d = doc.data() || {};
+    document.getElementById("ay-name").textContent = d.display_name || currentUser.email;
+    document.getElementById("ay-email").textContent = d.email || currentUser.email || "—";
+    document.getElementById("ay-role").textContent = d.role === "admin" ? "🔑 Admin" : "👤 Kullanıcı";
+    document.getElementById("ay-name-inp").value = d.display_name || "";
+    if (d.photo_url) {
+      document.getElementById("ay-avatar").innerHTML = `<img src="${d.photo_url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+    }
+  } catch(e) {}
+  // Toggle durumları
+  document.getElementById("sw-theme").checked = localStorage.getItem("hgs_theme") !== "light";
+  document.getElementById("sw-cur").checked   = localStorage.getItem("hgs_cur") !== "en";
+  document.getElementById("sw-lastv").checked = localStorage.getItem("hgs_lastv") !== "off";
+  const favLoc = localStorage.getItem("hgs_favloc") || "";
+  document.getElementById("sel-favloc").value = favLoc;
+  // Bildirim izni
+  document.getElementById("sw-notif").checked =
+    Notification.permission === "granted" && localStorage.getItem("hgs_notif") === "on";
+  renderSwatches();
+}
+
+/* ── AYAR: Tema ── */
+function applyTheme() {
+  const light = localStorage.getItem("hgs_theme") === "light";
+  document.documentElement.setAttribute("data-theme", light ? "light" : "dark");
+}
+function toggleTheme(el) {
+  localStorage.setItem("hgs_theme", el.checked ? "dark" : "light");
+  applyTheme();
+}
+
+/* ── AYAR: Para Formatı ── */
+function fmtCur(n) {
+  const en = localStorage.getItem("hgs_cur") === "en";
+  return en
+    ? n.toLocaleString("en-US", { minimumFractionDigits:2, maximumFractionDigits:2 }) + " ₺"
+    : n.toFixed(2).replace(".", ",").replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " ₺";
+}
+function toggleCur(el) {
+  localStorage.setItem("hgs_cur", el.checked ? "tr" : "en");
+}
+
+/* ── TEMA RENGİ ── */
+const ACCENT_COLORS = [
+  { name:"Turuncu", c:"#ff6b35", c2:"#ff9a00" },
+  { name:"Mavi",    c:"#3b82f6", c2:"#60a5fa" },
+  { name:"Yeşil",   c:"#00d4aa", c2:"#00a87e" },
+  { name:"Mor",     c:"#8b5cf6", c2:"#a78bfa" },
+  { name:"Kırmızı", c:"#ef4444", c2:"#f87171" },
+  { name:"Pembe",   c:"#ec4899", c2:"#f472b6" },
+  { name:"Sarı",    c:"#f59e0b", c2:"#fbbf24" },
+];
+function applyAccent() {
+  const saved = localStorage.getItem("hgs_accent");
+  const col = ACCENT_COLORS.find(a => a.c === saved) || ACCENT_COLORS[0];
+  document.documentElement.style.setProperty("--or",  col.c);
+  document.documentElement.style.setProperty("--or2", col.c2);
+  const r=parseInt(col.c.slice(1,3),16),g=parseInt(col.c.slice(3,5),16),b=parseInt(col.c.slice(5,7),16);
+  document.documentElement.style.setProperty("--glow", `rgba(${r},${g},${b},0.07)`);
+}
+function setAccent(c) {
+  localStorage.setItem("hgs_accent", c);
+  applyAccent();
+  renderSwatches();
+}
+function renderSwatches() {
+  const el = document.getElementById("color-swatches");
+  if (!el) return;
+  const cur = localStorage.getItem("hgs_accent") || "#ff6b35";
+  el.innerHTML = ACCENT_COLORS.map(a => `
+    <div onclick="setAccent('${a.c}')" title="${a.name}" style="
+      width:32px;height:32px;border-radius:50%;background:${a.c};cursor:pointer;
+      border:3px solid ${cur===a.c ? '#fff' : 'transparent'};
+      box-shadow:${cur===a.c ? '0 0 0 2px '+a.c : 'none'};
+      transition:.15s;flex-shrink:0"></div>`).join("");
+}
+
+/* ── AYAR: Bildirimler ── */
+async function toggleNotif(el) {
+  if (el.checked) {
+    const perm = await Notification.requestPermission();
+    if (perm !== "granted") { el.checked = false; toast("Bildirim izni reddedildi"); return; }
+    localStorage.setItem("hgs_notif", "on");
+    toast("🔔 Bildirimler açıldı");
+  } else {
+    localStorage.setItem("hgs_notif", "off");
+  }
+}
+let _notifTimer = null;
+function sendNotif(title, body) {
+  // Banner her zaman göster (cihazdan bağımsız)
+  document.getElementById("nb-title").textContent = title;
+  document.getElementById("nb-sub").textContent   = body;
+  const banner = document.getElementById("notif-banner");
+  banner.classList.add("show");
+  clearTimeout(_notifTimer);
+  _notifTimer = setTimeout(() => banner.classList.remove("show"), 5000);
+  // Sistem bildirimi (sadece izin varsa)
+  if (typeof Notification !== "undefined" && Notification.permission === "granted") {
+    try { new Notification(title, { body, icon: "icons/icon.svg" }); } catch(e) {}
+  }
+}
+function closeNotifBanner() {
+  document.getElementById("notif-banner").classList.remove("show");
+  clearTimeout(_notifTimer);
+}
+
+/* ── AYAR: Genel pref kaydet ── */
+function savePref(key, val) {
+  if (key === "lastVehicle") localStorage.setItem("hgs_lastv", val ? "on" : "off");
+  if (key === "favLoc")      localStorage.setItem("hgs_favloc", val);
+}
+
+/* ── AYAR: Profil Fotoğrafı ── */
+function resizeImage(file, size) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = size; canvas.height = size;
+      const ctx = canvas.getContext("2d");
+      const min = Math.min(img.width, img.height);
+      const sx = (img.width - min) / 2, sy = (img.height - min) / 2;
+      ctx.drawImage(img, sx, sy, min, min, 0, 0, size, size);
+      URL.revokeObjectURL(url);
+      resolve(canvas.toDataURL("image/jpeg", 0.75));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("Görsel açılamadı")); };
+    img.src = url;
+  });
+}
+async function uploadAyarPhoto(input) {
+  const file = input.files[0]; if (!file) return;
+  document.getElementById("ay-msg").innerHTML = '<span style="color:var(--sub)">⏳ Yükleniyor...</span>';
+  try {
+    const b64 = await resizeImage(file, 128);
+    await db.collection("user").doc(currentUser.uid).update({ photo_url: b64 });
+    document.getElementById("ay-avatar").innerHTML = `<img src="${b64}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+    document.getElementById("ay-msg").innerHTML = '<span style="color:var(--tl)">✅ Fotoğraf güncellendi</span>';
+    setTimeout(() => document.getElementById("ay-msg").innerHTML = "", 2000);
+  } catch(e) {
+    document.getElementById("ay-msg").innerHTML = `<span style="color:var(--or)">❌ ${e.message||String(e)}</span>`;
+  }
+  input.value = "";
+}
+
+async function saveAyarName() {
+  const name = document.getElementById("ay-name-inp").value.trim();
+  if (!name) return;
+  try {
+    await db.collection("user").doc(currentUser.uid).update({ display_name: name });
+    document.getElementById("ay-name").textContent = name;
+    document.getElementById("uname").textContent = name;
+    document.getElementById("ay-msg").innerHTML = '<span style="color:var(--tl)">✅ Kaydedildi</span>';
+    setTimeout(() => document.getElementById("ay-msg").innerHTML = "", 2000);
+  } catch(e) {
+    document.getElementById("ay-msg").innerHTML = `<span style="color:var(--or)">❌ ${e.message}</span>`;
   }
 }
 
-function go(name, el) {
-  document.querySelectorAll(".pg").forEach(p => p.classList.remove("on"));
-  document.querySelectorAll(".tb").forEach(t => t.classList.remove("on"));
-  document.getElementById("pg-" + name).classList.add("on");
-  el.classList.add("on");
-  document.querySelector(".body").scrollTop = 0;
-  if (name === "filo") loadFilo();
+function openProfile() {
+  db.collection("user").doc(currentUser.uid).get().then(doc => {
+    const d = doc.data() || {};
+    document.getElementById("pr-email").textContent = d.email || currentUser.email || "—";
+    document.getElementById("pr-role").textContent = d.role === "admin" ? "🔑 Admin" : "👤 Kullanıcı";
+    document.getElementById("pr-name").value = d.display_name || "";
+    document.getElementById("pr-msg").innerHTML = "";
+  });
+  const m = document.getElementById("m-profile");
+  m.style.display = "flex";
 }
+
+function closeProfile() {
+  document.getElementById("m-profile").style.display = "none";
+}
+
+async function saveProfile() {
+  const name = document.getElementById("pr-name").value.trim();
+  if (!name) { document.getElementById("pr-msg").innerHTML = '<div style="color:var(--or);font-size:.82rem">Ad Soyad boş olamaz</div>'; return; }
+  try {
+    await db.collection("user").doc(currentUser.uid).update({ display_name: name });
+    document.getElementById("uname").textContent = name;
+    document.getElementById("pr-msg").innerHTML = '<div style="color:var(--tl);font-size:.82rem">✅ Profil güncellendi</div>';
+    setTimeout(closeProfile, 1000);
+  } catch(e) {
+    document.getElementById("pr-msg").innerHTML = `<div style="color:var(--or);font-size:.82rem">❌ ${e.message}</div>`;
+  }
+}
+
+function ping() {
+  const online = navigator.onLine;
+  document.getElementById("adot").className = "adot " + (online ? "on" : "off");
+  document.getElementById("albl").textContent = online ? "Bağlı" : "Bağlantı yok";
+}
+
+/* ══ GLOBAL ARAMA ══ */
+let _gsData = null, _gsLoading = false;
+
+async function openGlobalSearch() {
+  document.getElementById("gsearch-overlay").classList.add("open");
+  const inp = document.getElementById("gs-inp");
+  if (inp) { inp.value = ""; setTimeout(() => inp.focus(), 150); }
+  document.getElementById("gs-results").innerHTML =
+    '<div class="gs-empty"><div class="gs-empty-ico">🔍</div>Aramak istediğinizi yazın…</div>';
+  // Veri önbelleği yoksa yükle
+  if (!_gsData && !_gsLoading) {
+    _gsLoading = true;
+    try {
+      const [pSnap, fSnap] = await Promise.all([
+        fetchBranch("passages", {orderBy:"passed_at",desc:true,limit:500}),
+        fetchBranch("fuels")
+      ]);
+      _gsData = {
+        passages: pSnap.docs.map(d => ({ id: d.id, ...d.data() })),
+        vehicles: _allVehicles,
+        fuels:    fSnap.docs.map(d => ({ id: d.id, ...d.data() }))
+      };
+    } catch(e) {}
+    _gsLoading = false;
+  }
+}
+
+function closeGlobalSearch() {
+  document.getElementById("gsearch-overlay").classList.remove("open");
+}
+
+function runGlobalSearch(q) {
+  q = (q||"").trim().toLowerCase();
+  const el = document.getElementById("gs-results");
+  if (!q) {
+    el.innerHTML = '<div class="gs-empty"><div class="gs-empty-ico">🔍</div>Aramak istediğinizi yazın…</div>';
+    return;
+  }
+  if (!_gsData) {
+    el.innerHTML = '<div class="gs-empty"><div class="gs-empty-ico">⏳</div>Veriler yükleniyor…</div>';
+    return;
+  }
+  const vehs = (_gsData.vehicles||[]).filter(v =>
+    (v.plate||"").toLowerCase().includes(q) ||
+    (v.owner_name||"").toLowerCase().includes(q)
+  ).slice(0,5);
+
+  const passes = (_gsData.passages||[]).filter(p =>
+    (p.plate||"").toLowerCase().includes(q) ||
+    (p.location||"").toLowerCase().includes(q) ||
+    (p.note||"").toLowerCase().includes(q)
+  ).slice(0,10);
+
+  const fuels = (_gsData.fuels||[]).filter(f =>
+    (f.plate||"").toLowerCase().includes(q) ||
+    (f.station||"").toLowerCase().includes(q)
+  ).slice(0,5);
+
+  if (!vehs.length && !passes.length && !fuels.length) {
+    el.innerHTML = '<div class="gs-empty"><div class="gs-empty-ico">🤷</div>Sonuç bulunamadı</div>';
+    return;
+  }
+
+  let html = "";
+  if (vehs.length) {
+    html += `<div class="gs-group-lbl">🚗 Araçlar</div>`;
+    html += vehs.map(v => `
+      <div class="gs-item" onclick="closeGlobalSearch();goD('filo','Filo Özeti','Araç ve harcama istatistikleri');setTimeout(()=>loadP('${v.plate}','${(v.owner_name||"").replace(/'/g,"\\'")}'),600)">
+        <div class="gs-ico veh">🚗</div>
+        <div class="gs-body">
+          <div class="gs-name">${v.plate}</div>
+          <div class="gs-meta">${v.owner_name||"İsimsiz"} · ${v.hgs_tag||"—"}</div>
+        </div>
+      </div>`).join("");
+  }
+  if (passes.length) {
+    html += `<div class="gs-group-lbl">🛣️ Geçişler</div>`;
+    html += passes.map(p => `
+      <div class="gs-item">
+        <div class="gs-ico pass">🛣️</div>
+        <div class="gs-body">
+          <div class="gs-name">${p.location||"—"}</div>
+          <div class="gs-meta">${p.plate||"—"} · ${dt(p.passed_at)}</div>
+        </div>
+        <div class="gs-tag">${tl(p.amount||0)}</div>
+      </div>`).join("");
+  }
+  if (fuels.length) {
+    html += `<div class="gs-group-lbl">⛽ Yakıt</div>`;
+    html += fuels.map(f => {
+      const d2 = f.date?.toDate ? f.date.toDate() : new Date(f.date||0);
+      return `<div class="gs-item">
+        <div class="gs-ico fuel">⛽</div>
+        <div class="gs-body">
+          <div class="gs-name">${f.station||"İsimsiz İstasyon"}</div>
+          <div class="gs-meta">${f.plate||"—"} · ${d2.toLocaleDateString("tr-TR")}</div>
+        </div>
+        <div class="gs-tag">${f.amount ? Math.round(f.amount).toLocaleString("tr-TR")+" ₺" : "—"}</div>
+      </div>`;
+    }).join("");
+  }
+  el.innerHTML = html;
+}
+
+/* ══ HIZLI GEÇİŞ FAB ══ */
+let _qpLoc = "";
+const _QP_LOCS = [
+  ["Osmangazi","Osmangazi Köprüsü"],
+  ["FSM","FSM Köprüsü"],
+  ["Boğaziçi","Boğaziçi Köprüsü"],
+  ["Avrasya","Avrasya Tüneli"],
+  ["YSS","YSS Köprüsü"],
+  ["K.Marmara","Kuzey Marmara Otoyolu"],
+  ["Kınalı","Kınalı–Sakarya"],
+  ["İzmir","İzmir–İstanbul Otoyolu"],
+  ["Diğer","Diğer"]
+];
+
+function openQpSheet() {
+  // Araçları doldur
+  const sel = document.getElementById("qp-plate");
+  if (sel && _allVehicles.length) {
+    const lastPlate = localStorage.getItem("hgs_lastplate") || "";
+    sel.innerHTML = '<option value="">Araç seç…</option>' +
+      _allVehicles.map(v =>
+        `<option value="${v.plate}"${v.plate===lastPlate?" selected":""}>${v.plate}${v.owner_name?" · "+v.owner_name:""}</option>`
+      ).join("");
+  }
+  // Chip'leri doldur
+  _qpLoc = "";
+  const favLoc = localStorage.getItem("hgs_favloc") || "";
+  document.getElementById("qp-chips").innerHTML = _QP_LOCS.map(([short, full]) =>
+    `<div class="qp-chip${full===favLoc?" active":""}" onclick="selQpLoc(this,'${full}')">${short}</div>`
+  ).join("");
+  if (favLoc) _qpLoc = favLoc;
+  // Tarih = şimdi
+  const now = new Date();
+  document.getElementById("qp-date").value =
+    new Date(now.getTime() - now.getTimezoneOffset()*60000).toISOString().slice(0,16);
+  document.getElementById("qp-amt").value = "";
+  document.getElementById("qp-msg").textContent = "";
+  const btn = document.getElementById("qp-save-btn");
+  if (btn) { btn.disabled = false; btn.innerHTML = "✓ Geçişi Kaydet"; }
+  document.getElementById("qp-sheet").classList.add("open");
+  setTimeout(() => document.getElementById("qp-amt").focus(), 200);
+}
+
+function closeQpSheet() {
+  document.getElementById("qp-sheet").classList.remove("open");
+}
+
+function selQpLoc(el, loc) {
+  document.querySelectorAll(".qp-chip").forEach(c => c.classList.remove("active"));
+  el.classList.add("active");
+  _qpLoc = loc;
+}
+
+async function saveQpPass() {
+  const plate  = document.getElementById("qp-plate").value;
+  const amt    = parseFloat(document.getElementById("qp-amt").value);
+  const dateVal= document.getElementById("qp-date").value;
+  const msgEl  = document.getElementById("qp-msg");
+  const btn    = document.getElementById("qp-save-btn");
+  if (!plate)         { msgEl.textContent = "❌ Araç seçin"; return; }
+  if (!amt || amt<=0) { msgEl.textContent = "❌ Geçerli tutar girin"; return; }
+  if (!_qpLoc)        { msgEl.textContent = "❌ Geçiş noktası seçin"; return; }
+  btn.disabled = true;
+  btn.innerHTML = '<div class="sp"></div>Kaydediliyor…';
+  try {
+    const passedAt = dateVal
+      ? firebase.firestore.Timestamp.fromDate(new Date(dateVal))
+      : TS();
+    await db.collection("passages").add({
+      plate, location: _qpLoc, entry_location: _qpLoc,
+      amount: amt, note: "",
+      passed_at: passedAt, uid: currentUser?.uid
+    });
+    closeQpSheet();
+    toast("✅ Geçiş kaydedildi");
+    if (localStorage.getItem("hgs_lastv") !== "off") localStorage.setItem("hgs_lastplate", plate);
+    if (_qpLoc && _qpLoc !== "Diğer") localStorage.setItem("hgs_lastloc", _qpLoc);
+    refreshAfterWrite();
+  } catch(e) {
+    msgEl.textContent = "❌ " + e.message;
+    btn.disabled = false;
+    btn.innerHTML = "✓ Geçişi Kaydet";
+  }
+}
+
+// FAB: gecis sayfasında gizle
+function updateFab(page) {
+  const fab = document.getElementById("fab-btn");
+  if (!fab) return;
+  fab.classList.toggle("hide", page === "gecis");
+}
+
+function openDrawer() {
+  document.getElementById("drawer").classList.add("open");
+  document.getElementById("dr-overlay").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+function closeDrawer() {
+  document.getElementById("drawer").classList.remove("open");
+  document.getElementById("dr-overlay").classList.remove("open");
+  document.body.style.overflow = "";
+}
+/* ── BADGE ── */
+let _todayPassCount = 0;
+function setBadge(id, n) {
+  const el = document.getElementById('badge-'+id);
+  if (!el) return;
+  if (n > 0) { el.style.display='inline-flex'; el.textContent = n > 99 ? '99+' : n; }
+  else el.style.display='none';
+}
+function clearBadge(id) { setBadge(id, 0); }
+function loadBadges() {
+  const now = new Date();
+  const todayStart = new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime();
+  fetchBranch("passages").then(snap => {
+    let cnt = 0;
+    snap.docs.forEach(d => {
+      const p = d.data();
+      const ms = p.entry_at?.toDate?.()?.getTime() || p.passed_at?.toDate?.()?.getTime() || 0;
+      if (ms >= todayStart) cnt++;
+    });
+    _todayPassCount = cnt;
+    if (cnt > 0) setBadge('gecis', cnt);
+  }).catch(()=>{});
+  fetchBranch("fuels").then(snap => {
+    const monthStart = new Date(now.getFullYear(),now.getMonth(),1).getTime();
+    let cnt = 0;
+    snap.docs.forEach(d => {
+      const f = d.data();
+      const ft = (f.date?.toDate?f.date.toDate():new Date(f.date||0)).getTime();
+      if (ft >= monthStart) cnt++;
+    });
+    if (cnt > 0) setBadge('yakitlar', cnt);
+  }).catch(()=>{});
+}
+
+/* ── HIZLI GEÇİŞ ── */
+function initQuickBar() {
+  const plate = localStorage.getItem('hgs_lastplate');
+  const loc   = localStorage.getItem('hgs_favloc') || localStorage.getItem('hgs_lastloc');
+  if (!plate) return;
+  const bar = document.getElementById('quick-bar');
+  if (!bar) return;
+  bar.style.display = 'flex';
+  document.getElementById('quick-plate').textContent = plate;
+  document.getElementById('quick-sub').textContent = loc ? loc : 'Konum belirtilmedi';
+}
+async function quickSave() {
+  const plate = localStorage.getItem('hgs_lastplate');
+  const loc   = localStorage.getItem('hgs_favloc') || localStorage.getItem('hgs_lastloc') || '';
+  if (!plate) { toast('Önce bir araç seçin'); return; }
+  const amt = parseFloat(document.getElementById('g-amt')?.value || 0);
+  if (!amt) { toast('Tutar giriniz'); return; }
+  const btn = document.querySelector('.quick-btn');
+  if (btn) { btn.textContent = '⏳'; btn.disabled = true; }
+  try {
+    await db.collection('passages').add({
+      plate, amount: amt,
+      location: loc, entry_location: loc,
+      passed_at: firebase.firestore.FieldValue.serverTimestamp(),
+      entry_at:  firebase.firestore.FieldValue.serverTimestamp(),
+      uid: currentUser?.uid
+    });
+    toast('✅ Hızlı geçiş kaydedildi');
+    document.getElementById('g-amt').value = '';
+    refreshAfterWrite();
+  } catch(e) { toast('❌ '+e.message); }
+  finally { if (btn) { btn.textContent = 'Kaydet'; btn.disabled = false; } }
+}
+
+/* ── KARŞILAŞTIRMA (Filo + Analiz) ── */
+function renderComparison(passSnap, fuelSnap, bodyId, lblId) {
+  const now = new Date(), mn = now.getMonth(), yr = now.getFullYear();
+  const monthNames = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+  const thisLbl = monthNames[mn], lastLbl = monthNames[(mn+11)%12];
+  const el = document.getElementById(lblId);
+  if (el) el.textContent = lastLbl + ' → ' + thisLbl;
+
+  const thisS = new Date(yr,mn,1).getTime(),   thisE = new Date(yr,mn+1,0,23,59,59).getTime();
+  const lastS = new Date(yr,mn-1,1).getTime(), lastE = new Date(yr,mn,0,23,59,59).getTime();
+  const inR = (ms,s,e) => ms>=s && ms<=e;
+
+  const passes = (passSnap?.docs||[]).map(d=>d.data());
+  const fuels  = (fuelSnap?.docs||[]).map(d=>d.data());
+
+  const pThis = passes.filter(p=>{const ms=p.entry_at?.toDate?.()?.getTime()||p.passed_at?.toDate?.()?.getTime()||0;return inR(ms,thisS,thisE);});
+  const pLast = passes.filter(p=>{const ms=p.entry_at?.toDate?.()?.getTime()||p.passed_at?.toDate?.()?.getTime()||0;return inR(ms,lastS,lastE);});
+  const fThis = fuels.filter(f=>{const ms=(f.date?.toDate?f.date.toDate():new Date(f.date||0)).getTime();return inR(ms,thisS,thisE);});
+  const fLast = fuels.filter(f=>{const ms=(f.date?.toDate?f.date.toDate():new Date(f.date||0)).getTime();return inR(ms,lastS,lastE);});
+
+  const hgsT=pThis.reduce((s,p)=>s+(p.amount||0),0), hgsL=pLast.reduce((s,p)=>s+(p.amount||0),0);
+  const fuelT=fThis.reduce((s,f)=>s+(f.amount||0),0), fuelL=fLast.reduce((s,f)=>s+(f.amount||0),0);
+
+  const chg = (cur, prv) => {
+    if (!prv) return '<span style="color:var(--sub);font-size:.72rem">—</span>';
+    const p=((cur-prv)/prv*100), abs=Math.abs(p).toFixed(1);
+    if (p>0)  return `<span class="cmp-chg chg-up">▲${abs}%</span>`;
+    if (p<0)  return `<span class="cmp-chg chg-dn">▼${abs}%</span>`;
+    return '<span class="cmp-chg" style="color:var(--sub)">—</span>';
+  };
+  const rows = [
+    ['🛣️ Geçiş Sayısı', pLast.length, pThis.length, v=>v.toLocaleString('tr-TR'), false],
+    ['💸 HGS Harcama',  hgsL, hgsT, tl, true],
+    ['⛽ Yakıt Harcama',fuelL, fuelT, tl, true],
+    ['💰 Toplam',       hgsL+fuelL, hgsT+fuelT, tl, true],
+  ];
+  const body = document.getElementById(bodyId);
+  if (!body) return;
+  body.innerHTML = rows.map(([lbl,prev,cur,fmt])=>`<div class="cmp-row">
+    <div class="cmp-lbl">${lbl}</div>
+    <div class="cmp-prev">${fmt(prev)}</div>
+    <div class="cmp-cur">${fmt(cur)}</div>
+    ${chg(cur,prev)}
+  </div>`).join('');
+}
+
+/* ── MOBİL YAKITLAR ── */
+let _mobYakit = [], _mobYakitFiltered = [], _mobYkChip = 'all';
+
+async function loadMobileYakitlar() {
+  document.getElementById("yakit-mob-list").innerHTML = '<div style="text-align:center;padding:2rem;color:var(--sub);font-size:.85rem">Yükleniyor...</div>';
+  try {
+    const [snap, vSnap] = await Promise.all([
+      fetchBranch("fuels", {orderBy:"date",desc:true}),
+      bQv().get()
+    ]);
+    _mobYakit = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const sel = document.getElementById("mym-plate");
+    if (sel) sel.innerHTML = '<option value="">Araç seç...</option>' +
+      vSnap.docs.map(d => `<option value="${d.id}">${d.id}</option>`).join('');
+    mobYkFilter();
+  } catch(e) { toast("Hata: "+e.message); }
+}
+
+function setMobYkChip(name, el) {
+  _mobYkChip = name;
+  document.querySelectorAll('[id^="yk-c-"]').forEach(b => {
+    b.style.background = ''; b.style.color = ''; b.style.borderColor = '';
+  });
+  el.style.background = 'var(--or)'; el.style.color = '#fff'; el.style.borderColor = 'var(--or)';
+  mobYkFilter();
+}
+function _mobYkRange() {
+  const now = new Date();
+  if (_mobYkChip==='month') return{start:new Date(now.getFullYear(),now.getMonth(),1).getTime(),end:new Date(now.getFullYear(),now.getMonth()+1,0,23,59,59).getTime()};
+  if (_mobYkChip==='week'){const d=new Date(now);d.setDate(d.getDate()-d.getDay()+1);d.setHours(0,0,0,0);return{start:d.getTime(),end:new Date(now.getFullYear(),now.getMonth(),now.getDate(),23,59,59).getTime()};}
+  if (_mobYkChip==='today') return{start:new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime(),end:new Date(now.getFullYear(),now.getMonth(),now.getDate(),23,59,59).getTime()};
+  return null;
+}
+function mobYkFilter() {
+  const q = (document.getElementById('yakit-mob-search')?.value||'').toLowerCase().trim();
+  const range = _mobYkRange();
+  let base = q ? _mobYakit.filter(f=>(f.plate||'').toLowerCase().includes(q)||(f.station||'').toLowerCase().includes(q)) : _mobYakit;
+  if (range) base = base.filter(f=>{const ft=(f.date?.toDate?f.date.toDate():new Date(f.date||0)).getTime();return ft>=range.start&&ft<=range.end;});
+  _mobYakitFiltered = base;
+  // Stat kartları
+  const cnt=base.length, litre=base.reduce((s,f)=>s+(f.litre||0),0), amt=base.reduce((s,f)=>s+(f.amount||0),0), price=litre>0?amt/litre:0;
+  const s=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  s('myk-cnt', cnt.toLocaleString('tr-TR'));
+  s('myk-amt', amt>=1000?(amt/1000).toFixed(1)+'K ₺':amt.toFixed(2).replace('.',',')+' ₺');
+  s('myk-litre', litre>=1000?(litre/1000).toFixed(1)+'K L':litre.toFixed(1)+' L');
+  s('myk-price', price>0?price.toFixed(2).replace('.',',')+'  ₺':'—');
+  renderYkVehBreakdown(base);
+  renderMobileYakitlar();
+}
+
+/* ── YAKIT ARAÇ ÖZET ── */
+let _ykVehCardVisible = true;
+function toggleYkVehCard() {
+  _ykVehCardVisible = !_ykVehCardVisible;
+  const list = document.getElementById("yk-veh-list");
+  const btn  = document.getElementById("yk-veh-toggle");
+  if (list) list.style.display = _ykVehCardVisible ? "" : "none";
+  if (btn)  btn.textContent    = _ykVehCardVisible ? "Gizle ▲" : "Göster ▼";
+}
+function renderYkVehBreakdown(fuels) {
+  const el = document.getElementById("yk-veh-list");
+  if (!el || !_ykVehCardVisible) return;
+  if (!fuels.length) {
+    el.innerHTML = '<div style="text-align:center;padding:.75rem;color:var(--sub);font-size:.8rem">Kayıt yok</div>';
+    return;
+  }
+  // Araç bazında topla
+  const byVeh = {};
+  fuels.forEach(f => {
+    const p = f.plate || "—";
+    if (!byVeh[p]) byVeh[p] = { amt: 0, litre: 0, cnt: 0 };
+    byVeh[p].amt   += f.amount||0;
+    byVeh[p].litre += f.litre||0;
+    byVeh[p].cnt++;
+  });
+  const list = Object.entries(byVeh).sort((a,b) => b[1].amt - a[1].amt);
+  const maxA = list[0]?.[1]?.amt || 1;
+  el.innerHTML = list.map(([plate, d]) => {
+    const pct = Math.round((d.amt/maxA)*100);
+    return `<div class="yk-veh-row">
+      <div class="yk-veh-plate">
+        <div class="eu"><span>🇹🇷</span><span>TR</span></div>
+        <div class="num">${plate}</div>
+      </div>
+      <div class="yk-veh-body">
+        <div class="yk-veh-bar-wrap"><div class="yk-veh-bar" style="width:${pct}%"></div></div>
+        <div class="yk-veh-meta">${d.cnt} kayıt · ${d.litre.toFixed(0)} L</div>
+      </div>
+      <div class="yk-veh-amt">${d.amt>=1000?(d.amt/1000).toFixed(1)+'K ₺':d.amt.toFixed(0)+' ₺'}</div>
+    </div>`;
+  }).join("");
+}
+function filterMobileYakitlar(q){ mobYkFilter(); }
+
+function renderMobileYakitlar() {
+  const el = document.getElementById("yakit-mob-list");
+  if (!el) return;
+  if (!_mobYakitFiltered.length) {
+    el.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--sub);font-size:.85rem">Yakıt kaydı yok</div>';
+    return;
+  }
+  el.innerHTML = _mobYakitFiltered.map(f => {
+    const d = f.date?.toDate ? f.date.toDate() : new Date(f.date||0);
+    return `<div style="background:var(--c1);border:1px solid var(--bdr);border-radius:16px;padding:.9rem 1rem;margin-bottom:.5rem">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.4rem">
+        <div style="display:flex;align-items:center;gap:.5rem">
+          <span style="background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.3);border-radius:8px;padding:.2rem .5rem;font-size:.75rem;font-weight:800;color:#f59e0b">${f.plate||'—'}</span>
+          ${f.station ? `<span style="font-size:.75rem;color:var(--sub)">${f.station}</span>` : ''}
+        </div>
+        <button onclick="delMobileYakit('${f.id}')" style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:.2rem .5rem;font-size:.75rem;cursor:pointer;color:#ef4444">🗑</button>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div style="font-size:.72rem;color:var(--sub)">${d.toLocaleDateString("tr-TR")} ${d.toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"})}</div>
+          ${f.km ? `<div style="font-size:.72rem;color:var(--sub);margin-top:.1rem">📍 ${f.km.toLocaleString("tr-TR")} km</div>` : ''}
+        </div>
+        <div style="text-align:right">
+          <div style="font-weight:800;font-size:1rem;color:var(--or)">${f.amount ? f.amount.toFixed(2).replace('.',',')+' ₺' : '—'}</div>
+          <div style="font-size:.72rem;color:var(--sub)">${f.litre ? f.litre.toFixed(2)+' L' : ''}</div>
+        </div>
+      </div>
+      ${f.note ? `<div style="font-size:.72rem;color:var(--sub);margin-top:.3rem;font-style:italic">${f.note}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function openYakitModal() {
+  const now = new Date();
+  const local = new Date(now.getTime() - now.getTimezoneOffset()*60000).toISOString().slice(0,16);
+  document.getElementById("mym-date").value = local;
+  document.getElementById("m-yakit-mob").style.display = "flex";
+}
+function closeYakitModal() {
+  document.getElementById("m-yakit-mob").style.display = "none";
+  document.getElementById("mym-msg").textContent = "";
+}
+
+async function saveMobileYakit() {
+  const plate  = document.getElementById("mym-plate").value.trim();
+  const dateV  = document.getElementById("mym-date").value;
+  const station= document.getElementById("mym-station").value.trim();
+  const litre  = parseFloat(document.getElementById("mym-litre").value);
+  const amount = parseFloat(document.getElementById("mym-amount").value);
+  const km     = parseInt(document.getElementById("mym-km").value)||null;
+  const note   = document.getElementById("mym-note").value.trim();
+  if (!plate||!dateV||isNaN(litre)||isNaN(amount)) {
+    document.getElementById("mym-msg").textContent = "❌ Plaka, tarih, miktar ve tutar zorunlu"; return;
+  }
+  try {
+    const data = { plate, date: new Date(dateV), station, litre, amount, km, note, uid: currentUser?.uid, created_at: firebase.firestore.FieldValue.serverTimestamp() };
+    const ref = await db.collection("fuels").add(data);
+    _mobYakit.unshift({ id: ref.id, ...data });
+    filterMobileYakitlar(document.getElementById("yakit-mob-search")?.value||'');
+    closeYakitModal();
+    toast("✅ Yakıt kaydı eklendi");
+    ["mym-plate","mym-date","mym-station","mym-litre","mym-amount","mym-km","mym-note"].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  } catch(e) { document.getElementById("mym-msg").textContent = "❌ "+e.message; }
+}
+
+async function delMobileYakit(id) {
+  if (!confirm("Bu yakıt kaydı silinsin mi?")) return;
+  try {
+    await db.collection("fuels").doc(id).delete();
+    _mobYakit = _mobYakit.filter(f => f.id !== id);
+    filterMobileYakitlar(document.getElementById("yakit-mob-search")?.value||'');
+    toast("Yakıt kaydı silindi");
+  } catch(e) { toast("Hata: "+e.message); }
+}
+
+function goD(name, title, sub) {
+  document.querySelectorAll(".pg").forEach(p => p.classList.remove("on"));
+  document.querySelectorAll(".dr-it").forEach(t => t.classList.remove("on"));
+  document.querySelectorAll(".bn").forEach(t => t.classList.remove("on"));
+  document.getElementById("pg-" + name).classList.add("on");
+  const drEl = document.getElementById("dr-" + name);
+  if (drEl) drEl.classList.add("on");
+  const bnEl = document.getElementById("bn-" + name);
+  if (bnEl) bnEl.classList.add("on");
+  document.getElementById("page-title").textContent = title || name;
+  document.getElementById("page-sub").textContent   = sub || "";
+  document.querySelector(".body").scrollTop = 0;
+  closeDrawer();
+  updateFab(name);
+  if (name === "filo") loadFilo();
+  // Tır animasyonu
+  const bar = document.getElementById("mob-truck-bar");
+  const ico = document.getElementById("mob-truck-ico");
+  if (bar && ico) {
+    bar.style.opacity = "1";
+    bar.style.display = "flex";
+    ico.style.animation = "none";
+    ico.offsetWidth;
+    ico.style.animation = "mobTruckPass 1.6s cubic-bezier(.4,0,.2,1) forwards";
+    setTimeout(() => {
+      bar.style.opacity = "0";
+      setTimeout(() => { bar.style.display = "none"; }, 300);
+    }, 1600);
+  }
+}
+function go(name, el) { goD(name); } // backward compat
 
 function toast(msg, ms = 2400) {
   const t = document.getElementById("toast");
@@ -629,102 +2756,283 @@ function toast(msg, ms = 2400) {
 }
 
 /* ── PLATE SYNC ── */
+let selectedPlate = "";
 function syncPD(v) {
   const el = document.getElementById("pd");
-  if (v.length >= 5) { el.textContent = v; el.className = "plate-num"; }
+  if (v && v.length >= 5) { el.textContent = v; el.className = "plate-num"; }
   else { el.textContent = v || "PLAKA GİRİN"; el.className = "plate-num ph"; }
 }
 
-/* ── GEÇİŞ ── */
-document.getElementById("g-loc").addEventListener("change", function() {
-  document.getElementById("glc-wrap").style.display = this.value === "Diğer" ? "block" : "none";
-});
+/* ── ARAÇ SEÇİCİ ── */
+let _allVehicles = [];
+function toggleVsel() {
+  const panel = document.getElementById("vsel-panel");
+  const arr   = document.getElementById("vsel-arr");
+  const open  = panel.classList.toggle("open");
+  arr.style.transform = open ? "rotate(180deg)" : "";
+  if (open) {
+    const s = document.getElementById("vsel-search");
+    if (s) { s.value = ""; filterVsel(""); s.focus(); }
+  }
+}
+function filterVsel(q) {
+  const list = document.getElementById("vsel-list");
+  if (!q.trim()) { list.innerHTML = ""; return; }
+  const filtered = _allVehicles.filter(v =>
+    v.plate.includes(q.trim().toUpperCase()) ||
+    (v.owner_name||"").toLowerCase().includes(q.toLowerCase())
+  );
+  renderVsel(filtered);
+}
 
+function renderVsel(vehicles) {
+  const list = document.getElementById("vsel-list");
+  if (!vehicles.length) { list.innerHTML = '<div class="vsel-ph">Araç bulunamadı</div>'; return; }
+  const vtype = {otomobil:"🚗",kamyon:"🚛",minibus:"🚐",tir:"🚚",diger:"🚙"};
+  list.innerHTML = vehicles.map(v => `
+    <div class="vsel-item" onclick="selVeh(this,'${v.plate}','${vtype[v.vehicle_type]||"🚗"}','${(v.owner_name||"").replace(/'/g,"\\'")}')">
+      <div class="vi-plate">${vtype[v.vehicle_type]||"🚗"} ${v.plate}</div>
+      <div class="vi-owner">${v.owner_name||'İsimsiz'}</div>
+    </div>`).join("");
+}
+
+function selVeh(el, plate, ico, owner) {
+  document.querySelectorAll(".vsel-item").forEach(i => i.classList.remove("active"));
+  el.classList.add("active");
+  selectedPlate = plate;
+  document.getElementById("vsel-ico").textContent = ico || "🚗";
+  document.getElementById("vsel-lbl").textContent = plate;
+  document.getElementById("vsel-panel").classList.remove("open");
+  document.getElementById("vsel-arr").style.transform = "";
+  syncPD(plate);
+  loadVehStats(plate);
+  if (localStorage.getItem("hgs_lastv") !== "off") localStorage.setItem("hgs_lastplate", plate);
+}
+async function loadVehStats(plate) {
+  const bar = document.getElementById("vstat-bar");
+  bar.classList.add("show");
+  document.getElementById("vs-total").textContent = "…";
+  document.getElementById("vs-month").textContent = "…";
+  document.getElementById("vs-count").textContent = "…";
+  try {
+    const pSnap = await db.collection("passages").where("plate","==",plate).get();
+    const ps = pSnap.docs.map(d=>d.data());
+    const total = ps.reduce((s,p)=>s+(p.amount||0),0);
+    const now = new Date();
+    const monthTotal = ps.filter(p=>{
+      const d = p.entry_at?.toDate?.() || p.passed_at?.toDate?.();
+      return d && d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();
+    }).reduce((s,p)=>s+(p.amount||0),0);
+    document.getElementById("vs-total").textContent = tl(total);
+    document.getElementById("vs-month").textContent = tl(monthTotal);
+    document.getElementById("vs-count").textContent = ps.length;
+  } catch(e) { bar.classList.remove("show"); }
+}
+function toggleExitLoc() {
+  const wrap   = document.getElementById("exit-loc-wrap");
+  const toggle = document.getElementById("exit-toggle");
+  const open   = wrap.classList.toggle("show");
+  toggle.classList.toggle("open", open);
+  toggle.querySelector(".et-ico").textContent = open ? "✕" : "＋";
+  if (open) document.getElementById("g-exit").focus();
+  else document.getElementById("g-exit").value = "";
+}
+
+/* ── KONUM CHİP ── */
+let selectedLoc = "";
+function selLoc(el, loc) {
+  document.querySelectorAll(".loc-chip").forEach(c => c.classList.remove("active"));
+  el.classList.add("active");
+  selectedLoc = loc;
+  document.getElementById("glc-wrap").style.display = loc === "Diğer" ? "block" : "none";
+  if (loc !== "Diğer") document.getElementById("g-lc").value = "";
+}
+
+/* ── GEÇİŞ ── */
 async function savePass() {
-  const plate  = document.getElementById("g-plate").value.trim().toUpperCase();
-  const ls     = document.getElementById("g-loc").value;
-  const loc    = ls === "Diğer" ? document.getElementById("g-lc").value.trim() : ls;
+  const plate  = selectedPlate;
+  const loc    = selectedLoc === "Diğer" ? document.getElementById("g-lc").value.trim() : selectedLoc;
   const amount = parseFloat(document.getElementById("g-amt").value);
   const note   = document.getElementById("g-not").value.trim();
 
-  if (!plate)          { setMsg("g", "err", "Plaka zorunlu"); return; }
-  if (!loc)            { setMsg("g", "err", "Geçiş noktası seçin"); return; }
+  if (!plate)             { setMsg("g", "err", "Araç seçin"); return; }
+  if (!loc)               { setMsg("g", "err", "Geçiş noktası seçin"); return; }
   if (!amount||amount<=0) { setMsg("g", "err", "Geçerli tutar girin"); return; }
 
   const btn = document.getElementById("btn-save");
   btn.disabled = true;
   btn.innerHTML = '<div class="sp"></div>Kaydediliyor...';
   try {
-    await api("POST", "/passages", { plate, location:loc, amount, note:note||undefined });
+    const exitLoc  = document.getElementById("g-exit")?.value?.trim() || "";
+    const dateVal  = document.getElementById("g-date").value;
+    const passedAt = dateVal ? firebase.firestore.Timestamp.fromDate(new Date(dateVal)) : TS();
+    await db.collection("passages").add({ plate, location: loc, entry_location: loc, exit_location: exitLoc, amount, note: note||"", passed_at: passedAt, uid: currentUser.uid });
     setMsg("g", "ok", `✓ ${plate} · ${loc} · ${tl(amount)}`);
     toast("✅ Geçiş kaydedildi");
-    document.getElementById("g-amt").value = "";
-    document.getElementById("g-not").value = "";
+    sendNotif("HGS Geçiş Kaydedildi", `${plate} · ${loc} · ${tl(amount)}`);
+    if (localStorage.getItem("hgs_lastv") !== "off") localStorage.setItem("hgs_lastplate", plate);
+    if (loc && loc !== 'Diğer') localStorage.setItem('hgs_lastloc', loc);
+    document.getElementById("g-amt").value  = "";
+    document.getElementById("g-not").value  = "";
+    document.getElementById("g-date").value = "";
+    initQuickBar();
+    refreshAfterWrite();
   } catch(e) { setMsg("g", "err", "❌ " + e.message); }
   btn.disabled = false;
   btn.textContent = "Geçişi Kaydet";
 }
 
 /* ── FİLO ── */
+let _filoFleet = [];
 async function loadFilo() {
   try {
-    const fleet = await api("GET", "/reports");
-    const tBal  = fleet.reduce((s,v) => s + v.balance, 0);
-    const tSp   = fleet.reduce((s,v) => s + v.total_spent, 0);
-    const tGc   = fleet.reduce((s,v) => s + v.total_passages, 0);
+    const [vSnap, pSnap, fSnap] = await Promise.all([
+      bQv().get(),
+      fetchBranch("passages"),
+      fetchBranch("fuels")
+    ]);
+    const vehicles = vSnap.docs.map(d => d.data()).sort((a,b)=>(a.plate||'').localeCompare(b.plate||''));
+    _allVehicles = vehicles;
+    _branchPlates = vehicles.map(v => v.plate).filter(Boolean);
+    const passages = pSnap.docs.map(d => d.data());
+    renderVsel(vehicles);
 
-    document.getElementById("f-bal").innerHTML = fmt(tBal) + ' <span>₺</span>';
-    document.getElementById("f-arac").textContent = fleet.length;
-    document.getElementById("f-sp").textContent = tl(tSp);
-    document.getElementById("f-gc").textContent = tGc;
+    const stats = {};
+    passages.forEach(p => {
+      if (!stats[p.plate]) stats[p.plate] = { count: 0, total: 0 };
+      stats[p.plate].count++;
+      stats[p.plate].total += p.amount||0;
+    });
 
-    if (!fleet.length) {
-      document.getElementById("vlist").innerHTML =
-        '<div class="empty"><div class="empty-i">🚗</div>Henüz araç yok</div>';
-      return;
-    }
-    document.getElementById("vlist").innerHTML = fleet.map(v => {
-      const c = v.balance > 100 ? "tok" : v.balance > 0 ? "tlo" : "tng";
-      return `
-        <div class="vrow" onclick="loadP('${v.plate}','${v.owner_name||''}')">
-          <div class="vico">🚗</div>
-          <div class="vbody">
-            <div class="vplate">${v.plate}</div>
-            <div class="vmeta">${v.owner_name||'İsimsiz'} · ${v.hgs_tag||'—'} · ${v.total_passages} geçiş · ${tl(v.total_spent)}</div>
-          </div>
-          <div class="vtag ${c}">${tl(v.balance)}</div>
-        </div>`;
-    }).join("");
+    _filoFleet = vehicles.map(v => ({
+      ...v,
+      total_passages: stats[v.plate]?.count || 0,
+      total_spent:    stats[v.plate]?.total || 0
+    }));
+
+    const tBal  = _filoFleet.reduce((s,v) => s + v.total_spent, 0);
+    const tGc   = _filoFleet.reduce((s,v) => s + v.total_passages, 0);
+    const tFuel = fSnap.docs.reduce((s,d)=>s+(d.data().amount||0), 0);
+    const tMali = tBal + tFuel;
+
+    document.getElementById("f-bal").innerHTML = fmt(tMali) + ' <span>₺</span>';
+    document.getElementById("f-arac").textContent = _filoFleet.length;
+    document.getElementById("f-sp").textContent   = tBal>=1000?(tBal/1000).toFixed(1)+'K ₺':tl(tBal);
+    document.getElementById("f-fuel").textContent = tFuel>=1000?(tFuel/1000).toFixed(1)+'K ₺':tl(tFuel);
+    document.getElementById("f-gc").textContent   = tGc;
+
+    // Karşılaştırma
+    renderComparison(pSnap, fSnap, 'f-cmp-body', 'f-cmp-lbl');
+
+    filterFilo();
   } catch(e) {
     document.getElementById("vlist").innerHTML =
       `<div class="empty"><div class="empty-i">⚡</div>${e.message}</div>`;
   }
 }
 
+function filterFilo() {
+  const q    = (document.getElementById("f-vsearch")?.value || "").trim().toUpperCase();
+  const sort = document.getElementById("f-vsort")?.value || "spent-desc";
+  const vtype = {otomobil:"🚗",kamyon:"🚛",minibus:"🚐",tir:"🚚",diger:"🚙"};
+
+  let list = _filoFleet.filter(v =>
+    !q || v.plate.includes(q) || (v.owner_name||"").toUpperCase().includes(q)
+  );
+
+  list.sort((a,b) => {
+    if (sort === "spent-desc")  return b.total_spent    - a.total_spent;
+    if (sort === "spent-asc")   return a.total_spent    - b.total_spent;
+    if (sort === "count-desc")  return b.total_passages - a.total_passages;
+    if (sort === "plate-asc")   return a.plate.localeCompare(b.plate);
+    return 0;
+  });
+
+  const lbl = document.getElementById("f-vcount-lbl");
+  if (lbl) lbl.textContent = q ? `${list.length} Sonuç` : `Araçlar (${list.length})`;
+
+  if (!list.length) {
+    document.getElementById("vlist").innerHTML =
+      '<div class="empty"><div class="empty-i">🔍</div>Araç bulunamadı</div>';
+    return;
+  }
+  document.getElementById("vlist").innerHTML = list.map(v => `
+    <div class="vrow" onclick="loadP('${v.plate}','${(v.owner_name||"").replace(/'/g,"\\'")}')">
+      <div class="vico">${vtype[v.vehicle_type]||"🚗"}</div>
+      <div class="vbody">
+        <div style="margin-bottom:.2rem">${ptagMob(v.plate)}</div>
+        <div class="vmeta">${v.owner_name||"İsimsiz"} · ${v.hgs_tag||"—"} · ${v.total_passages} geçiş</div>
+      </div>
+      <div class="vtag tok">${tl(v.total_spent)}</div>
+    </div>`).join("");
+}
+
+let _currentPassages = [];
 async function loadP(plate, owner) {
   const sec = document.getElementById("psec");
   sec.style.display = "block";
   document.getElementById("ptitle").textContent = `${plate}${owner ? " · " + owner : ""}`;
   document.getElementById("plist").innerHTML = '<div class="empty">Yükleniyor...</div>';
+  // Filtre temizle
+  ["f-pdate1","f-pdate2","f-ploc"].forEach(id => { const el = document.getElementById(id); if(el) el.value=""; });
+  const sortEl = document.getElementById("f-psort"); if(sortEl) sortEl.value = "date-desc";
   try {
-    const ps = await api("GET", `/passages?plate=${plate}`);
-    if (!ps.length) {
-      document.getElementById("plist").innerHTML = '<div class="empty"><div class="empty-i">🛣️</div>Geçiş yok</div>';
-      return;
-    }
-    document.getElementById("plist").innerHTML = ps.map(p => `
-      <div class="prow">
-        <div class="pico">🛣️</div>
-        <div class="pbody">
-          <div class="ploc">${p.location}</div>
-          <div class="pdate">${dt(p.passed_at)}${p.note ? " · "+p.note : ""}</div>
-        </div>
-        <div class="pamt">${tl(p.amount)}</div>
-      </div>`).join("");
+    const pSnap = await db.collection("passages").where("plate","==",plate).get();
+    _currentPassages = pSnap.docs.map(d => d.data());
+    filterPassages();
   } catch(e) {
     document.getElementById("plist").innerHTML = `<div class="empty">${e.message}</div>`;
   }
-  sec.scrollIntoView({ behavior: "smooth" });
+  sec.scrollIntoView({ behavior:"smooth" });
+}
+
+function filterPassages() {
+  const d1   = document.getElementById("f-pdate1")?.value;
+  const d2   = document.getElementById("f-pdate2")?.value;
+  const loc  = (document.getElementById("f-ploc")?.value || "").trim().toLowerCase();
+  const sort = document.getElementById("f-psort")?.value || "date-desc";
+
+  let ps = _currentPassages.filter(p => {
+    const d = p.entry_at?.toDate?.() || p.passed_at?.toDate?.();
+    if (d1 && d && d < new Date(d1)) return false;
+    if (d2 && d && d > new Date(d2 + "T23:59:59")) return false;
+    if (loc && !(p.location||"").toLowerCase().includes(loc)) return false;
+    return true;
+  });
+
+  ps.sort((a,b) => {
+    const ta = a.passed_at?.toDate?.()?.getTime() || 0;
+    const tb = b.passed_at?.toDate?.()?.getTime() || 0;
+    if (sort === "date-desc") return tb - ta;
+    if (sort === "date-asc")  return ta - tb;
+    if (sort === "amt-desc")  return (b.amount||0) - (a.amount||0);
+    if (sort === "amt-asc")   return (a.amount||0) - (b.amount||0);
+    return 0;
+  });
+
+  const total = ps.reduce((s,p) => s+(p.amount||0), 0);
+  const cntEl = document.getElementById("f-pcount");
+  if (cntEl) cntEl.textContent = `${ps.length} geçiş · Toplam: ${tl(total)}`;
+
+  if (!ps.length) {
+    document.getElementById("plist").innerHTML = '<div class="empty"><div class="empty-i">🔍</div>Sonuç bulunamadı</div>';
+    return;
+  }
+  document.getElementById("plist").innerHTML = ps.map(p => `
+    <div class="prow">
+      <div class="pico">🛣️</div>
+      <div class="pbody">
+        <div class="ploc">${p.location||"—"}</div>
+        <div class="pdate">${dt(p.passed_at)}${p.note ? " · "+p.note : ""}</div>
+      </div>
+      <div class="pamt">${tl(p.amount||0)}</div>
+    </div>`).join("");
+}
+
+function clearPassFilter() {
+  ["f-pdate1","f-pdate2","f-ploc"].forEach(id => { const el = document.getElementById(id); if(el) el.value=""; });
+  const sortEl = document.getElementById("f-psort"); if(sortEl) sortEl.value = "date-desc";
+  filterPassages();
 }
 
 /* ── ARAÇ ── */
@@ -732,13 +3040,18 @@ async function addVeh() {
   const plate = document.getElementById("a-plate").value.trim().toUpperCase();
   const hgs   = document.getElementById("a-hgs").value.trim();
   const own   = document.getElementById("a-own").value.trim();
-  const bal   = parseFloat(document.getElementById("a-bal").value) || 0;
   if (!plate) { setMsg("a", "err", "Plaka zorunlu"); return; }
   try {
-    await api("POST", "/vehicles", { plate, hgs_tag:hgs||undefined, owner_name:own||undefined, balance:bal });
+    const docId = currentUser.uid + "_" + plate;
+    const existing = await db.collection("vehicles").doc(docId).get();
+    if (existing.exists) throw new Error("Bu plaka zaten kayıtlı");
+    const vData = { plate, hgs_tag:hgs||"", owner_name:own||"", vehicle_type:"otomobil", uid:currentUser.uid, created_at:TS() };
+    if (currentBranchId) vData.branch_id = currentBranchId;
+    await db.collection("vehicles").doc(docId).set(vData);
     setMsg("a", "ok", `✓ ${plate} eklendi`);
     toast("Araç eklendi: " + plate);
-    ["a-plate","a-hgs","a-own","a-bal"].forEach(id => document.getElementById(id).value = "");
+    ["a-plate","a-hgs","a-own"].forEach(id => document.getElementById(id).value = "");
+    bQv().get().then(snap => { _allVehicles = snap.docs.map(d=>d.data()); _branchPlates = _allVehicles.map(v=>v.plate).filter(Boolean); renderVsel(_allVehicles); });
   } catch(e) { setMsg("a", "err", "❌ " + e.message); }
 }
 
@@ -747,8 +3060,10 @@ async function updBal() {
   const bal   = parseFloat(document.getElementById("u-bal").value);
   if (!plate || isNaN(bal)) { setMsg("u", "err", "Plaka ve bakiye girin"); return; }
   try {
-    const v = await api("PUT", `/vehicles/${plate}`, { balance: bal });
-    setMsg("u", "ok", `✓ ${v.plate} → ${tl(v.balance)}`);
+    const vDoc = await db.collection("vehicles").doc(plate).get();
+    if (!vDoc.exists) throw new Error("Araç bulunamadı");
+    await db.collection("vehicles").doc(plate).update({ balance: bal });
+    setMsg("u", "ok", `✓ ${plate} → ${tl(bal)}`);
     toast("Bakiye güncellendi");
   } catch(e) { setMsg("u", "err", "❌ " + e.message); }
 }
@@ -758,21 +3073,712 @@ function setMsg(id, type, text) {
   document.getElementById(id + "-msg").innerHTML = `<div class="msg ${type}">${text}</div>`;
 }
 function tl(n)  { return n.toFixed(2).replace(".", ",") + " ₺"; }
+function tlShort(n) {
+  if (n >= 1e6) return (n/1e6).toFixed(1).replace(".",",")+` M ₺`;
+  if (n >= 1e3) return (n/1e3).toFixed(1).replace(".",",")+` B ₺`;
+  return tl(n);
+}
+function ptagMob(plate) {
+  return `<span style="display:inline-flex;align-items:stretch;border-radius:6px;overflow:hidden;border:1.5px solid #3a4ab0;box-shadow:0 1px 4px rgba(0,0,0,.3);height:24px;vertical-align:middle"><span style="background:#1a2fb0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 4px;gap:0"><span style="font-size:.65rem;line-height:1">🇹🇷</span><span style="font-size:.42rem;font-weight:800;color:#fff;letter-spacing:.04em;line-height:1">TR</span></span><span style="background:#fff;color:#111;font-family:'Space Grotesk',monospace;font-weight:800;font-size:.78rem;letter-spacing:.08em;padding:0 .45rem;display:flex;align-items:center">${plate}</span></span>`;
+}
 function fmt(n) { return Math.round(n).toLocaleString("tr-TR"); }
 function dt(s) {
   try {
-    const d = new Date(s);
+    const d = s?.toDate ? s.toDate() : new Date(s);
     return d.toLocaleDateString("tr-TR") + " " +
            d.toLocaleTimeString("tr-TR", { hour:"2-digit", minute:"2-digit" });
-  } catch { return s; }
+  } catch { return "—"; }
 }
 
-// Kullanıcı adını göster
-document.getElementById("uname").textContent = user.full_name || user.username || "—";
+/* ── ANA SAYFA İSTATİSTİKLERİ ── */
+async function loadHomeStats() {
+  try {
+    const snap = await fetchBranch("passages");
+    const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+    let todayTotal = 0, monthTotal = 0, monthCount = 0;
+    snap.docs.forEach(d => {
+      const p = d.data();
+      const ms = p.entry_at?.toDate?.()?.getTime() || p.passed_at?.toDate?.()?.getTime() || 0;
+      if (!ms) return;
+      if (ms >= monthStart) { monthTotal += p.amount||0; monthCount++; }
+      if (ms >= todayStart) { todayTotal += p.amount||0; }
+    });
+    document.getElementById("gs-today").textContent = tl(todayTotal);
+    document.getElementById("gs-month").textContent = tl(monthTotal);
+    document.getElementById("gs-cnt").textContent   = monthCount;
+  } catch(e) {}
+}
 
-ping();
-setInterval(ping, 10000);
-if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
+/* ── SON GEÇİŞLER SLİDER ── */
+async function loadRecentPassages() {
+  const el = document.getElementById("recent-slider");
+  if (!el) return;
+  el.innerHTML = '<div class="s-loading"><div class="sp"></div></div>';
+  try {
+    const snap = await fetchBranch("passages", {orderBy:"passed_at",desc:true,limit:12});
+    if (snap.empty) {
+      el.innerHTML = '<div class="s-loading" style="color:var(--sub)">Henüz geçiş yok</div>';
+      return;
+    }
+    const vtype = {otomobil:"🚗",kamyon:"🚛",minibus:"🚐",tir:"🚚",diger:"🚙"};
+    el.innerHTML = snap.docs.map(d => {
+      const p = d.data();
+      const ms = p.entry_at?.toDate?.()?.getTime() || p.passed_at?.toDate?.()?.getTime() || 0;
+      const dateStr = ms ? new Date(ms).toLocaleDateString("tr-TR",{day:"2-digit",month:"2-digit",year:"numeric"}) : "—";
+      const ico = "🚗";
+      const loc = p.location || p.entry_location || "—";
+      return `<div class="s-card" onclick="selFromSlider('${p.plate}')">
+        <div class="s-plate">${ico} ${p.plate||"—"}</div>
+        <div class="s-amt">${tl(p.amount||0)}</div>
+        <div class="s-loc">${loc}</div>
+        <div class="s-date">${dateStr}</div>
+      </div>`;
+    }).join("");
+  } catch(e) {
+    el.innerHTML = '<div class="s-loading" style="color:var(--sub)">Yüklenemedi</div>';
+  }
+}
+
+/* ── TAKVİM ── */
+let _calYear, _calMonth, _calPassages = [], _calSpecialDays = [];
+const _calMonthNames = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
+
+// Sabit Türk resmi tatilleri (MM-DD formatı)
+const TR_HOLIDAYS = {
+  "01-01": "Yılbaşı",
+  "04-23": "Ulusal Egemenlik ve Çocuk Bayramı",
+  "05-01": "Emek ve Dayanışma Günü",
+  "05-19": "Atatürk'ü Anma, Gençlik ve Spor Bayramı",
+  "07-15": "Demokrasi ve Millî Birlik Günü",
+  "08-30": "Zafer Bayramı",
+  "10-29": "Cumhuriyet Bayramı",
+};
+// Dini tatiller (yıla göre yaklaşık tarihler — YYYY-MM-DD)
+const TR_RELIGIOUS = [
+  // Ramazan Bayramı
+  { date:"2024-04-10", name:"Ramazan Bayramı (1. Gün)" },
+  { date:"2024-04-11", name:"Ramazan Bayramı (2. Gün)" },
+  { date:"2024-04-12", name:"Ramazan Bayramı (3. Gün)" },
+  { date:"2025-03-30", name:"Ramazan Bayramı (1. Gün)" },
+  { date:"2025-03-31", name:"Ramazan Bayramı (2. Gün)" },
+  { date:"2025-04-01", name:"Ramazan Bayramı (3. Gün)" },
+  { date:"2026-03-20", name:"Ramazan Bayramı (1. Gün)" },
+  { date:"2026-03-21", name:"Ramazan Bayramı (2. Gün)" },
+  { date:"2026-03-22", name:"Ramazan Bayramı (3. Gün)" },
+  // Kurban Bayramı
+  { date:"2024-06-16", name:"Kurban Bayramı (1. Gün)" },
+  { date:"2024-06-17", name:"Kurban Bayramı (2. Gün)" },
+  { date:"2024-06-18", name:"Kurban Bayramı (3. Gün)" },
+  { date:"2024-06-19", name:"Kurban Bayramı (4. Gün)" },
+  { date:"2025-06-06", name:"Kurban Bayramı (1. Gün)" },
+  { date:"2025-06-07", name:"Kurban Bayramı (2. Gün)" },
+  { date:"2025-06-08", name:"Kurban Bayramı (3. Gün)" },
+  { date:"2025-06-09", name:"Kurban Bayramı (4. Gün)" },
+  { date:"2026-05-27", name:"Kurban Bayramı (1. Gün)" },
+  { date:"2026-05-28", name:"Kurban Bayramı (2. Gün)" },
+  { date:"2026-05-29", name:"Kurban Bayramı (3. Gün)" },
+  { date:"2026-05-30", name:"Kurban Bayramı (4. Gün)" },
+];
+
+function getHolidayName(year, month, day) {
+  const mmdd = String(month+1).padStart(2,"0") + "-" + String(day).padStart(2,"0");
+  if (TR_HOLIDAYS[mmdd]) return TR_HOLIDAYS[mmdd];
+  const ymd = `${year}-${String(month+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+  const rel = TR_RELIGIOUS.find(r => r.date === ymd);
+  return rel ? rel.name : null;
+}
+
+async function loadTakvim() {
+  const now = new Date();
+  _calYear  = now.getFullYear();
+  _calMonth = now.getMonth();
+  const [pSnap, sSnap] = await Promise.all([
+    fetchBranch("passages"),
+    db.collection("special_days").where("uid","==",currentUser.uid).get()
+  ]);
+  _calPassages   = pSnap.docs.map(d => d.data());
+  _calSpecialDays = sSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+  renderCal();
+}
+
+function calNav(dir) {
+  _calMonth += dir;
+  if (_calMonth > 11) { _calMonth = 0; _calYear++; }
+  if (_calMonth < 0)  { _calMonth = 11; _calYear--; }
+  renderCal();
+  document.getElementById("cal-detail").style.display = "none";
+}
+
+function renderCal() {
+  document.getElementById("cal-month-lbl").textContent = `${_calMonthNames[_calMonth]} ${_calYear}`;
+
+  // Ay geçişlerini filtrele
+  const monthPasses = _calPassages.filter(p => {
+    const d = p.entry_at?.toDate?.() || p.passed_at?.toDate?.();
+    return d && d.getFullYear() === _calYear && d.getMonth() === _calMonth;
+  });
+
+  // Gün bazında grupla
+  const dayMap = {};
+  monthPasses.forEach(p => {
+    const d = p.entry_at?.toDate?.() || p.passed_at?.toDate?.();
+    if (!d) return;
+    const day = d.getDate();
+    if (!dayMap[day]) dayMap[day] = { total: 0, count: 0, passes: [] };
+    dayMap[day].total += p.amount || 0;
+    dayMap[day].count++;
+    dayMap[day].passes.push(p);
+  });
+
+  // Özet istatistik
+  const mTotal = monthPasses.reduce((s,p) => s+(p.amount||0), 0);
+  document.getElementById("cal-m-total").textContent = tl(mTotal);
+  document.getElementById("cal-m-cnt").textContent   = monthPasses.length;
+  document.getElementById("cal-m-days").textContent  = Object.keys(dayMap).length;
+
+  // Bu aya ait özel günleri hazırla
+  const specMap = {};
+  _calSpecialDays.forEach(s => {
+    const [y,m,d] = s.date.split("-").map(Number);
+    if (y === _calYear && m === _calMonth+1) specMap[d] = s.name;
+  });
+
+  // Grid oluştur
+  const firstDay = new Date(_calYear, _calMonth, 1).getDay();
+  const offset   = firstDay === 0 ? 6 : firstDay - 1;
+  const daysInMonth = new Date(_calYear, _calMonth + 1, 0).getDate();
+  const today = new Date();
+  const isCurrentMonth = today.getFullYear() === _calYear && today.getMonth() === _calMonth;
+
+  let html = "";
+  for (let i = 0; i < offset; i++) html += `<div class="cal-day empty"></div>`;
+  for (let d = 1; d <= daysInMonth; d++) {
+    const info     = dayMap[d];
+    const holName  = getHolidayName(_calYear, _calMonth, d);
+    const specName = specMap[d];
+    const isToday  = isCurrentMonth && d === today.getDate();
+    const classes  = ["cal-day"];
+    if (isToday)   classes.push("today");
+    if (info)      classes.push("has-pass");
+    if (holName)   classes.push("is-holiday");
+    else if (specName) classes.push("is-special");
+
+    const amtStr = info && info.total > 0
+      ? (info.total >= 1000 ? (info.total/1000).toFixed(1)+"K" : Math.round(info.total)+"₺")
+      : "";
+
+    // Badges (nokta göstergeleri)
+    let badges = "";
+    if (info || holName || specName) {
+      badges = `<div class="cal-day-badges">
+        ${info    ? '<div class="cal-badge pass"></div>' : ""}
+        ${holName ? '<div class="cal-badge hol"></div>'  : ""}
+        ${specName? '<div class="cal-badge spec"></div>' : ""}
+      </div>`;
+    }
+
+    html += `<div class="${classes.join(" ")}" onclick="calSelDay(${d})">
+      <div class="cal-day-num">${d}</div>
+      ${badges}
+      ${amtStr ? `<div class="cal-day-amt">${amtStr}</div>` : ""}
+    </div>`;
+  }
+  document.getElementById("cal-days").innerHTML = html;
+}
+
+function calSelDay(day) {
+  // Seçim vurgula
+  document.querySelectorAll(".cal-day").forEach(el => el.classList.remove("selected"));
+  const all = document.querySelectorAll("#cal-days .cal-day:not(.empty)");
+  const firstDay = new Date(_calYear, _calMonth, 1).getDay();
+  const offset   = firstDay === 0 ? 6 : firstDay - 1;
+  const idx = day - 1;
+  if (all[idx]) all[idx].classList.add("selected");
+
+  // O günün geçişlerini filtrele
+  const passes = _calPassages.filter(p => {
+    const d = p.entry_at?.toDate?.() || p.passed_at?.toDate?.();
+    return d && d.getFullYear() === _calYear && d.getMonth() === _calMonth && d.getDate() === day;
+  }).sort((a,b) => {
+    const ta = a.entry_at?.toDate?.()?.getTime() || a.passed_at?.toDate?.()?.getTime() || 0;
+    const tb = b.entry_at?.toDate?.()?.getTime() || b.passed_at?.toDate?.()?.getTime() || 0;
+    return tb - ta;
+  });
+
+  const detail = document.getElementById("cal-detail");
+  const head   = document.getElementById("cal-detail-head");
+  const list   = document.getElementById("cal-detail-list");
+
+  const holName  = getHolidayName(_calYear, _calMonth, day);
+  const specName = _calSpecialDays.find(s => {
+    const [y,m,d2] = s.date.split("-").map(Number);
+    return y === _calYear && m === _calMonth+1 && d2 === day;
+  })?.name;
+
+  head.textContent = `${day} ${_calMonthNames[_calMonth]} — ${passes.length} Geçiş`;
+  detail.style.display = "block";
+
+  let extraHtml = "";
+  if (holName)  extraHtml += `<div style="display:flex;align-items:center;gap:.5rem;padding:.55rem 1.15rem;background:rgba(239,68,68,.06);border-bottom:1px solid var(--bdr)"><span style="color:#ef4444;font-size:.85rem">🎌</span><span style="font-size:.8rem;font-weight:700;color:#ef4444">${holName}</span></div>`;
+  if (specName) extraHtml += `<div style="display:flex;align-items:center;gap:.5rem;padding:.55rem 1.15rem;background:rgba(59,130,246,.06);border-bottom:1px solid var(--bdr)"><span style="color:#3b82f6;font-size:.85rem">📌</span><span style="font-size:.8rem;font-weight:700;color:#3b82f6">${specName}</span></div>`;
+
+  if (!passes.length) {
+    list.innerHTML = extraHtml + '<div class="empty"><div class="empty-i">🛣️</div>Bu günde geçiş yok</div>';
+  } else {
+    const dayTotal = passes.reduce((s,p) => s+(p.amount||0), 0);
+    list.innerHTML = extraHtml + passes.map(p => {
+      const d = p.entry_at?.toDate?.() || p.passed_at?.toDate?.();
+      const timeStr = d ? d.toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"}) : "—";
+      return `<div class="prow">
+        <div class="pico">🛣️</div>
+        <div class="pbody">
+          <div class="ploc">${p.plate} · ${p.location||"—"}</div>
+          <div class="pdate">${timeStr}${p.note ? " · "+p.note : ""}</div>
+        </div>
+        <div class="pamt">${tl(p.amount||0)}</div>
+      </div>`;
+    }).join("") + `<div style="padding:.6rem 1.15rem;font-size:.75rem;font-weight:700;color:var(--sub);border-top:1px solid var(--bdr);text-align:right">Toplam: <span style="color:var(--or)">${tl(dayTotal)}</span></div>`;
+  }
+
+  detail.scrollIntoView({ behavior:"smooth", block:"nearest" });
+}
+
+/* ── ÖZEL GÜNLER ── */
+function openSpecialModal() {
+  renderSpecList();
+  // Seçili günü tarih alanına doldur
+  const inp = document.getElementById("spec-date-inp");
+  if (!inp.value) {
+    const today = new Date();
+    inp.value = `${_calYear}-${String(_calMonth+1).padStart(2,"0")}-${String(today.getDate()).padStart(2,"0")}`;
+  }
+  document.getElementById("m-special").classList.add("open");
+}
+function closeSpecialModal() {
+  document.getElementById("m-special").classList.remove("open");
+}
+
+async function addSpecialDay() {
+  const name = document.getElementById("spec-name-inp").value.trim();
+  const date = document.getElementById("spec-date-inp").value;
+  if (!name || !date) { toast("Ad ve tarih girin"); return; }
+  try {
+    const docId = currentUser.uid + "_" + date;
+    await db.collection("special_days").doc(docId).set({ name, date, uid: currentUser.uid });
+    _calSpecialDays = _calSpecialDays.filter(s => s.date !== date);
+    _calSpecialDays.push({ id: docId, name, date, uid: currentUser.uid });
+    document.getElementById("spec-name-inp").value = "";
+    renderSpecList();
+    renderCal();
+    toast("📌 Özel gün eklendi");
+  } catch(e) { toast("❌ " + e.message); }
+}
+
+async function delSpecialDay(id, date) {
+  try {
+    await db.collection("special_days").doc(id).delete();
+    _calSpecialDays = _calSpecialDays.filter(s => s.id !== id);
+    renderSpecList();
+    renderCal();
+    toast("Silindi");
+  } catch(e) { toast("❌ " + e.message); }
+}
+
+function renderSpecList() {
+  const el = document.getElementById("spec-list");
+  if (!_calSpecialDays.length) {
+    el.innerHTML = '<div class="empty" style="padding:1rem 0"><div class="empty-i">📌</div>Özel gün yok</div>';
+    return;
+  }
+  const sorted = [..._calSpecialDays].sort((a,b) => a.date.localeCompare(b.date));
+  el.innerHTML = sorted.map(s => `
+    <div class="spec-list-item">
+      <div class="spec-dot"></div>
+      <div class="spec-body">
+        <div class="spec-name">${s.name}</div>
+        <div class="spec-date">${s.date.split("-").reverse().join(".")}</div>
+      </div>
+      <button class="spec-del" onclick="delSpecialDay('${s.id}','${s.date}')">🗑️</button>
+    </div>`).join("");
+}
+
+/* ── Dashboard ── */
+let _dashLoaded = false;
+let _dashPassages = [], _dashFuels = [], _dashVehicles = [];
+let _dashFilter = 'all';
+
+function _dashFilterPassages(passages, filter) {
+  if (filter === 'all') return passages;
+  const now = new Date();
+  return passages.filter(p => {
+    const d = p.passed_at?.toDate?.() || p.entry_at?.toDate?.() || (p.passed_at?.seconds ? new Date(p.passed_at.seconds*1000) : null);
+    if (!d) return false;
+    if (filter === 'today') {
+      return d.getFullYear()===now.getFullYear() && d.getMonth()===now.getMonth() && d.getDate()===now.getDate();
+    }
+    if (filter === 'week') {
+      const startOfWeek = new Date(now); startOfWeek.setDate(now.getDate()-now.getDay()+1); startOfWeek.setHours(0,0,0,0);
+      return d >= startOfWeek;
+    }
+    if (filter === 'month') {
+      return d.getFullYear()===now.getFullYear() && d.getMonth()===now.getMonth();
+    }
+    return true;
+  });
+}
+
+function _dashFilterFuels(fuels, filter) {
+  if (filter === 'all') return fuels;
+  const now = new Date();
+  return fuels.filter(f => {
+    const d = f.date ? new Date(f.date) : null;
+    if (!d) return false;
+    if (filter === 'today') return d.getFullYear()===now.getFullYear() && d.getMonth()===now.getMonth() && d.getDate()===now.getDate();
+    if (filter === 'week') { const s=new Date(now); s.setDate(now.getDate()-now.getDay()+1); s.setHours(0,0,0,0); return d>=s; }
+    if (filter === 'month') return d.getFullYear()===now.getFullYear() && d.getMonth()===now.getMonth();
+    return true;
+  });
+}
+
+function renderDashStats() {
+  const filter   = _dashFilter;
+  const passages = _dashFilterPassages(_dashPassages, filter);
+  const fuels    = _dashFilterFuels(_dashFuels, filter);
+  const vehicles = _dashVehicles;
+
+  // Ana stat kartları
+  const tHgs     = passages.reduce((s,p) => s+(p.amount||0), 0);
+  const tFuel    = fuels.reduce((s,f) => s+(f.amount||0), 0);
+  const tMaliyet = tHgs + tFuel;
+  document.getElementById('ds-hgs').textContent     = tlShort(tHgs);
+  document.getElementById('ds-yakit').textContent   = tlShort(tFuel);
+  document.getElementById('ds-maliyet').textContent = tlShort(tMaliyet);
+  document.getElementById('ds-gecis').textContent   = passages.length;
+
+  // Aktif / Pasif araç sayısı
+  const aktif  = vehicles.filter(v => v.is_active !== false).length;
+  const pasif  = vehicles.filter(v => v.is_active === false).length;
+  document.getElementById('ds-aktif').textContent = aktif;
+  document.getElementById('ds-pasif').textContent = pasif;
+
+  // Araç başı ortalama HGS
+  const aktifCount = aktif || 1;
+  const avgHgs = tHgs / aktifCount;
+  document.getElementById('ds-avg-hgs').textContent = tlShort(avgHgs);
+
+  // Düşük bakiyeli araçlar (balance < 100 TL)
+  const LOW_THRESHOLD = 100;
+  const lowBal = vehicles.filter(v => v.is_active !== false && typeof v.balance === 'number' && v.balance < LOW_THRESHOLD)
+                         .sort((a,b) => (a.balance||0)-(b.balance||0));
+  const lowBalEl = document.getElementById('ds-lowbal');
+  if (lowBal.length) {
+    lowBalEl.classList.add('show');
+    document.getElementById('ds-lowbal-list').innerHTML = lowBal.map(v =>
+      `<div class="ds-lowbal-row">
+        <span class="ds-lowbal-plate">${v.plate||'—'}</span>
+        <span class="ds-lowbal-val">₺${(v.balance||0).toFixed(2)}</span>
+      </div>`
+    ).join('');
+  } else {
+    lowBalEl.classList.remove('show');
+  }
+
+  // En çok harcayan 5 araç
+  const vStats = {};
+  passages.forEach(p => { if(!vStats[p.plate]) vStats[p.plate]=0; vStats[p.plate]+=(p.amount||0); });
+  const topV = Object.entries(vStats).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const maxVS = topV[0]?.[1] || 1;
+  document.getElementById('ds-top-vehs').innerHTML = topV.length ? topV.map(([plate,amt]) => `
+    <div style="padding:.55rem 0;border-bottom:1px solid var(--bdr)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.35rem">
+        ${ptagMob(plate)}
+        <span style="font-weight:800;font-size:.8rem;color:var(--or)">${tlShort(amt)}</span>
+      </div>
+      <div style="height:5px;border-radius:3px;background:var(--bdr);overflow:hidden">
+        <div style="height:100%;width:${Math.round(amt/maxVS*100)}%;background:var(--or);border-radius:3px"></div>
+      </div>
+    </div>`).join('') : '<div class="empty">Veri yok</div>';
+
+  // Araç başı ortalama detay kartı
+  const vFuelStats = {};
+  fuels.forEach(f => { if(!vFuelStats[f.plate]) vFuelStats[f.plate]=0; vFuelStats[f.plate]+=(f.amount||0); });
+  const totalFuelForAvg = fuels.reduce((s,f)=>s+(f.amount||0),0);
+  document.getElementById('ds-avg-body').innerHTML = `
+    <div class="ds-avg-row">
+      <span class="ds-avg-lbl">Araç Başı HGS</span>
+      <span class="ds-avg-val">${tlShort(aktifCount ? tHgs/aktifCount : 0)}</span>
+    </div>
+    <div class="ds-avg-row">
+      <span class="ds-avg-lbl">Araç Başı Yakıt</span>
+      <span class="ds-avg-val" style="color:var(--tl)">${tlShort(aktifCount ? totalFuelForAvg/aktifCount : 0)}</span>
+    </div>
+    <div class="ds-avg-row">
+      <span class="ds-avg-lbl">Geçiş Başı Ücret</span>
+      <span class="ds-avg-val" style="color:#8b5cf6">${tlShort(passages.length ? tHgs/passages.length : 0)}</span>
+    </div>
+    <div class="ds-avg-row">
+      <span class="ds-avg-lbl">Araç Başı Toplam</span>
+      <span class="ds-avg-val">${tlShort(aktifCount ? tMaliyet/aktifCount : 0)}</span>
+    </div>`;
+
+  // Son 10 geçiş
+  const recent = [..._dashPassages].sort((a,b)=>{
+    const da=a.passed_at?.toDate?.()?.getTime()||a.passed_at?.seconds*1000||0;
+    const db2=b.passed_at?.toDate?.()?.getTime()||b.passed_at?.seconds*1000||0;
+    return db2-da;
+  }).slice(0,10);
+  document.getElementById('ds-recent').innerHTML = recent.length ? recent.map(p => {
+    const ts=p.passed_at?.toDate?.() || (p.passed_at?.seconds ? new Date(p.passed_at.seconds*1000) : null);
+    const ds=ts?ts.toLocaleDateString('tr-TR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'—';
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:.42rem 0;border-bottom:1px solid var(--bdr);gap:.5rem">
+      <div style="min-width:0">
+        <div style="font-size:.78rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.location||p.entry_location||'—'}</div>
+        <div style="font-size:.63rem;color:var(--sub);margin-top:.1rem">${ptagMob(p.plate)} · ${ds}</div>
+      </div>
+      <div style="font-weight:800;font-size:.82rem;color:var(--or);flex-shrink:0">${tl(p.amount||0)}</div>
+    </div>`;
+  }).join('') : '<div class="empty">Geçiş yok</div>';
+}
+
+function setDashFilter(filter, btn) {
+  _dashFilter = filter;
+  document.querySelectorAll('.ds-flt-btn').forEach(b => b.classList.remove('on'));
+  if (btn) btn.classList.add('on');
+  if (_dashLoaded) renderDashStats();
+}
+
+async function loadDash() {
+  if (_dashLoaded) return;
+  _dashLoaded = true;
+  try {
+    // Hoşgeldin
+    const hr = new Date().getHours();
+    const greet = hr < 12 ? 'Günaydın' : hr < 18 ? 'İyi günler' : 'İyi akşamlar';
+    const uName = firebase.auth().currentUser?.displayName || '';
+    document.getElementById('dash-greet').textContent = `${greet}${uName ? ', ' + uName.split(' ')[0] : ''} 👋`;
+
+    const [pSnap, vSnap, fSnap] = await Promise.all([
+      fetchBranch("passages"),
+      bQv().get(),
+      fetchBranch("fuels")
+    ]);
+    _dashPassages = pSnap.docs.map(d => d.data());
+    _dashVehicles = vSnap.docs.map(d => d.data());
+    _dashFuels    = fSnap.docs.map(d => d.data());
+
+    // Bu Ay vs Geçen Ay (sabit, filtresiz)
+    renderComparison(pSnap, fSnap, 'ds-cmp-body', 'ds-cmp-lbl');
+
+    // Aylık HGS bar chart (son 6 ay, filtresiz)
+    const now = new Date();
+    const months = Array.from({length:6},(_,i)=>{
+      const d=new Date(now.getFullYear(),now.getMonth()-5+i,1); return {y:d.getFullYear(),m:d.getMonth()};
+    });
+    const mLabels = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+    const mData = months.map(({y,m}) =>
+      _dashPassages.filter(p=>{ const d=p.passed_at?.toDate?.()||( p.passed_at?.seconds?new Date(p.passed_at.seconds*1000):null); return d&&d.getFullYear&&d.getFullYear()===y&&d.getMonth()===m; })
+                   .reduce((s,p)=>s+(p.amount||0),0)
+    );
+    const maxV = Math.max(...mData, 1);
+    document.getElementById('ds-bars').innerHTML = months.map(({y,m},i) => {
+      const pct = Math.round((mData[i]/maxV)*100);
+      const isNow = y===now.getFullYear()&&m===now.getMonth();
+      return `<div class="bar-col">
+        <div class="bar-val">${mData[i]>0?tlShort(mData[i]):''}</div>
+        <div class="bar-wrap"><div class="bar${isNow?' active':''}" style="height:${Math.max(pct,2)}%;opacity:${.4+.6*(mData[i]/maxV)}"></div></div>
+        <div class="bar-lbl">${mLabels[m]}</div>
+      </div>`;
+    }).join('');
+
+    renderDashStats();
+  } catch(e) { console.error(e); }
+}
+
+async function loadAnaliz() {
+  try {
+    const [pSnap, vSnap, fSnap] = await Promise.all([
+      fetchBranch("passages"),
+      bQv().get(),
+      fetchBranch("fuels")
+    ]);
+    const passages = pSnap.docs.map(d => d.data());
+    const vehicles = vSnap.docs.map(d => d.data());
+
+    // Özet
+    const total = passages.reduce((s,p) => s + (p.amount||0), 0);
+    const avg   = passages.length ? total / passages.length : 0;
+    document.getElementById("an-total").textContent = tl(total);
+    document.getElementById("an-avg").textContent   = tl(avg);
+    document.getElementById("an-cnt").textContent   = passages.length;
+
+    // ── 1. AYLIK BAR CHART ──
+    const now = new Date();
+    const months = [];
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      months.push({ year: d.getFullYear(), month: d.getMonth(), total: 0 });
+    }
+    passages.forEach(p => {
+      const d = p.entry_at?.toDate?.() || p.passed_at?.toDate?.();
+      if (!d) return;
+      const m = months.find(x => x.year === d.getFullYear() && x.month === d.getMonth());
+      if (m) m.total += p.amount || 0;
+    });
+    const maxBar = Math.max(...months.map(m => m.total), 1);
+    const curMonth = now.getMonth();
+    const monthNames = ["Oca","Şub","Mar","Nis","May","Haz","Tem","Ağu","Eyl","Eki","Kas","Ara"];
+    document.getElementById("an-bars").innerHTML = months.map(m => {
+      const pct = Math.max((m.total / maxBar) * 100, 3);
+      const active = m.month === curMonth && m.year === now.getFullYear();
+      const valStr = m.total >= 1000 ? (m.total/1000).toFixed(1)+"K" : Math.round(m.total)+"";
+      return `<div class="bar-col">
+        <div class="bar-val">${m.total > 0 ? valStr : ""}</div>
+        <div class="bar-wrap"><div class="bar${active?" active":""}" style="height:${pct}%"></div></div>
+        <div class="bar-lbl">${monthNames[m.month]}</div>
+      </div>`;
+    }).join("");
+
+    // ── 2. GÜZERGAH SIRALAMA ──
+    const routeMap = {};
+    passages.forEach(p => {
+      const loc = p.location || p.entry_location || "Bilinmiyor";
+      if (!routeMap[loc]) routeMap[loc] = { total: 0, count: 0 };
+      routeMap[loc].total += p.amount || 0;
+      routeMap[loc].count++;
+    });
+    const routes = Object.entries(routeMap)
+      .map(([name, v]) => ({ name, ...v }))
+      .sort((a, b) => b.total - a.total)
+      .slice(0, 8);
+    const maxRoute = routes[0]?.total || 1;
+    const rankClass = ["gold","silver","bronze"];
+    document.getElementById("an-routes").innerHTML = routes.length
+      ? routes.map((r, i) => `
+        <div class="rank-row">
+          <div class="rank-num ${rankClass[i]||""}">${i+1}</div>
+          <div class="rank-body">
+            <div class="rank-name">${r.name}</div>
+            <div class="rank-bar-wrap"><div class="rank-bar" style="width:${(r.total/maxRoute*100).toFixed(1)}%"></div></div>
+          </div>
+          <div class="rank-amt">${tl(r.total)}</div>
+        </div>`).join("")
+      : '<div class="empty"><div class="empty-i">🛣️</div>Geçiş verisi yok</div>';
+
+    // ── 3. ARAÇ KARŞILAŞTIRMA ──
+    const vtype = {otomobil:"🚗",kamyon:"🚛",minibus:"🚐",tir:"🚚",diger:"🚙"};
+    const vStats = {};
+    passages.forEach(p => {
+      if (!vStats[p.plate]) vStats[p.plate] = { total: 0, count: 0 };
+      vStats[p.plate].total += p.amount || 0;
+      vStats[p.plate].count++;
+    });
+    const vList = vehicles
+      .map(v => ({ ...v, total: vStats[v.plate]?.total || 0, count: vStats[v.plate]?.count || 0 }))
+      .sort((a, b) => b.total - a.total);
+    const maxV = vList[0]?.total || 1;
+    document.getElementById("an-vehicles").innerHTML = vList.length
+      ? vList.map(v => `
+        <div class="vcomp-row">
+          <div class="vcomp-ico">${vtype[v.vehicle_type]||"🚗"}</div>
+          <div class="vcomp-body">
+            <div class="vcomp-plate">${v.plate}</div>
+            <div class="vcomp-meta">${v.owner_name||"İsimsiz"} · ${v.count} geçiş</div>
+            <div class="vcomp-bar-wrap"><div class="vcomp-bar" style="width:${(v.total/maxV*100).toFixed(1)}%"></div></div>
+          </div>
+          <div class="vcomp-amt">${tl(v.total)}</div>
+        </div>`).join("")
+      : '<div class="empty"><div class="empty-i">🚗</div>Araç yok</div>';
+
+    // ── 4. HAFTALIK TREND ──
+    const WEEK_COLORS = ["#ff6b35","#3b82f6","#00d4aa","#8b5cf6"];
+    const weekLabels = [];
+    const weekData   = []; // [{label, total, count}]
+    for (let i = 3; i >= 0; i--) {
+      const start = new Date(); start.setHours(0,0,0,0);
+      start.setDate(start.getDate() - start.getDay() - (i * 7) + 1); // Pazartesi
+      const end = new Date(start); end.setDate(end.getDate() + 6); end.setHours(23,59,59,999);
+      const label = i === 0 ? "Bu Hafta"
+        : i === 1 ? "Geçen Hafta"
+        : `${start.getDate()}/${start.getMonth()+1}`;
+      const wp = passages.filter(p => {
+        const d = p.entry_at?.toDate?.() || p.passed_at?.toDate?.();
+        return d && d >= start && d <= end;
+      });
+      weekData.push({ label, total: wp.reduce((s,p)=>s+(p.amount||0),0), count: wp.length, color: WEEK_COLORS[3-i] });
+    }
+    const maxWeek = Math.max(...weekData.map(w=>w.total), 1);
+    document.getElementById("an-weeks").innerHTML = weekData.map(w => {
+      const pct = Math.max((w.total/maxWeek)*100, 3);
+      const valStr = w.total >= 1000 ? (w.total/1000).toFixed(1)+"K" : Math.round(w.total)+"";
+      return `<div class="week-col">
+        <div class="week-bars">
+          <div class="week-bar" style="height:${pct}%;background:linear-gradient(180deg,${w.color},${w.color}99)"></div>
+        </div>
+        <div class="week-lbl">${w.label}</div>
+      </div>`;
+    }).join("");
+    document.getElementById("an-week-legend").innerHTML = weekData.map(w =>
+      `<div class="week-legend-item"><div class="week-legend-dot" style="background:${w.color}"></div>${w.label}: <strong style="color:var(--txt)">${tl(w.total)}</strong> (${w.count} geçiş)</div>`
+    ).join("");
+
+    // Hafta üstü/altı karşılaştırma
+    const thisW = weekData[3], lastW = weekData[2];
+    if (lastW.total > 0) {
+      const diff = ((thisW.total - lastW.total) / lastW.total * 100).toFixed(1);
+      const arrow = diff >= 0 ? "▲" : "▼";
+      const color = diff >= 0 ? "var(--or)" : "var(--tl)";
+    }
+
+    // ── 5. SAATLİK YOĞUNLUK ──
+    const hourMap = Array(24).fill(0);
+    passages.forEach(p => {
+      const d = p.entry_at?.toDate?.() || p.passed_at?.toDate?.();
+      if (d) hourMap[d.getHours()]++;
+    });
+    const maxHour = Math.max(...hourMap, 1);
+    const peakHour = hourMap.indexOf(Math.max(...hourMap));
+    document.getElementById("an-hours").innerHTML = hourMap.map((cnt, h) => {
+      const pct = Math.max((cnt/maxHour)*100, 2);
+      const isPeak = cnt === Math.max(...hourMap) && cnt > 0;
+      return `<div class="hour-col" title="${h}:00 — ${cnt} geçiş">
+        <div class="hour-bar${isPeak?" peak":""}" style="height:${pct}%"></div>
+        <div class="hour-lbl">${h%3===0?h:""}</div>
+      </div>`;
+    }).join("");
+
+    const peakCnt = hourMap[peakHour];
+    if (peakCnt > 0) {
+      const period = peakHour < 6 ? "gece" : peakHour < 12 ? "sabah" : peakHour < 17 ? "öğleden sonra" : "akşam";
+      document.getElementById("an-peak-info").innerHTML =
+        `En yoğun saat: <strong style="color:var(--or)">${peakHour}:00–${peakHour+1}:00</strong> · ${peakCnt} geçiş · ${period} saatleri`;
+    }
+
+    // Karşılaştırma kartı
+    renderComparison(pSnap, fSnap, 'an-cmp-body', 'an-cmp-lbl');
+
+  } catch(e) {
+    document.getElementById("an-bars").innerHTML = `<div class="empty">${e.message}</div>`;
+  }
+}
+
+function selFromSlider(plate) {
+  // Araç seçiciden o plakayı bul ve seç
+  const item = [...document.querySelectorAll(".vsel-item")].find(
+    i => i.querySelector(".vi-plate")?.textContent?.includes(plate)
+  );
+  if (item) {
+    selVeh(item, plate, "🚗");
+    document.querySelector(".body").scrollTo({ top: 300, behavior: "smooth" });
+  } else {
+    // Araç seçiciyi aç ve plakayı yaz
+    const panel = document.getElementById("vsel-panel");
+    if (!panel.classList.contains("open")) toggleVsel();
+    const s = document.getElementById("vsel-search");
+    if (s) { s.value = plate; filterVsel(plate); }
+  }
+}
 </script>
 </body>
 </html>
